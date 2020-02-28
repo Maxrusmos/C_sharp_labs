@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using ToNumberSystem;
 
 namespace lab04 {
   class Program {
@@ -12,21 +13,11 @@ namespace lab04 {
         System.Environment.Exit(1);
       }
 
-      string result = ""; 
-      int temp = 0;
-      int number = values[0];
-
-      if (values[0] > 0) {
-        while (values[0] >= (values[1] - 1)) {
-          temp = values[0] % values[1];
-          values[0] = (values[0] - temp) / values[1];
-          result = Convert.ToString(temp) + result;
-        }
+      if (values[1] < 2 || values[1] > 36) {
+        Console.WriteLine("Введена некорректная система счисления");
+        System.Environment.Exit(2);
       }
-      Console.WriteLine(Convert.ToString(number, values[1]));
-
-      result = Convert.ToString(values[0]) + result;
-      Console.WriteLine("Число " + number +  " в " + values[1] + "-й системе = " + result);
+      Console.WriteLine(ToNumberSystem.ToNumberSystem.ToNS(values[0], values[1]));
     }
   }
 }

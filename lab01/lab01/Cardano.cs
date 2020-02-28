@@ -34,14 +34,12 @@ namespace Cardano {
         var A_compl = Muavr(tmp_A);
         var B_compl = Muavr(tmp_B);
 
-        var i1 = new Complex(0.0, 1.0); //i 
-
         double y1 = (((-Complex.Add(A_compl / 2.0, B_compl / 2.0)) +
-          Complex.Multiply(i1, (Complex.Subtract(A_compl / 2.0, B_compl / 2.0) * Math.Sqrt(3.0))))).Real;
+          Complex.Multiply(Complex.ImaginaryOne, (Complex.Subtract(A_compl / 2.0, B_compl / 2.0) * Math.Sqrt(3.0))))).Real;
         complexArr[0] = (y1 - (b / (3.0 * a)));
 
         double y3 = (((-Complex.Add(A_compl / 2.0, B_compl / 2.0)) -
-          Complex.Multiply(i1, (Complex.Subtract(A_compl / 2.0, B_compl / 2.0) * Math.Sqrt(3.0))))).Real;
+          Complex.Multiply(Complex.ImaginaryOne, (Complex.Subtract(A_compl / 2.0, B_compl / 2.0) * Math.Sqrt(3.0))))).Real;
         complexArr[2] = (y3 - (b / (3.0 * a)));
 
         double y2 = (Complex.Add(A_compl, B_compl)).Real;
@@ -62,6 +60,9 @@ namespace Cardano {
       } else {
         B = Math.Pow(tmp_negative, (1.0 / 3.0));
       }
+
+      Console.WriteLine(A);
+      Console.WriteLine(B);
 
       if (Q > 0) {
         double y1 = A + B;

@@ -1,10 +1,12 @@
 ﻿using System;
 
 namespace ToNumberSystem {
-  public class ToNumberSystem {
+  public static class ToNumberSystem {
+
     private static string correct(int remains) {
       string[] letters = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
                            "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+
       string remainStr = "";
       string result = "";
 

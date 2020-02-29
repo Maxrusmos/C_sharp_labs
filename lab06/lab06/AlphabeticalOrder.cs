@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace AlphabeticalOrder {
-  public class AlphabeticalOrder {
+  public static class AlphabeticalOrder {
     public static void SortAlphabeticalOrder(string[] mainStr, out string AlphabeticalOrderStr, out string lastLetterStr) {
       lastLetterStr = "";
       AlphabeticalOrderStr = "";

@@ -28,12 +28,13 @@ namespace GeometricAverage {
       
       var composition = 1.0;
       for (int i = 0; i < Arr.Length; i++) {
-        if (Arr[i] < Eps) {
-          Console.ForegroundColor = ConsoleColor.Red;
-          Console.WriteLine("Геометрическое среднее может быть найдено тогда, и только тогда, если выборка состоит из положительных чисел.");
-          System.Environment.Exit(3);
-        }
         composition *= Arr[i];
+      }
+
+      if (composition < Eps) {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Геометрическое среднее может быть найдено тогда, и только тогда, если выборка состоит из положительных чисел.");
+        System.Environment.Exit(3);
       }
 
       return Math.Pow(composition, 1.0 / Arr.Length);

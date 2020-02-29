@@ -11,7 +11,8 @@ namespace lab07 {
       var strBuild = new StringBuilder(str);
 
       Console.ForegroundColor = ConsoleColor.Cyan;
-      Console.WriteLine("Отсортированная строка: " + StrSort.StrSort.AscendingOrder(strBuild) + "/n");      
+      Console.WriteLine("Отсортированная строка: " + StrSort.StrSort.AscendingOrder(strBuild) + Environment.NewLine);    
+      
     }
   }
 }

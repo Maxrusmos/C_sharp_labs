@@ -17,7 +17,8 @@ namespace PiELn2 {
       ln2 = 0;
 
       for (int k = 0; k < 15; k++) {
-        pi = pi + (1 / (decimal)Math.Pow(16, k)) * (decimal.Divide(4, 8 * k + 1) - decimal.Divide(2, 8 * k + 4) - decimal.Divide(1, 8 * k + 5) - decimal.Divide(1, 8 * k + 6));
+        pi = pi + (1 / (decimal)Math.Pow(16, k)) * (decimal.Divide(4, 8 * k + 1) - decimal.Divide(2, 8 * k + 4) -
+          decimal.Divide(1, 8 * k + 5) - decimal.Divide(1, 8 * k + 6));
       }
       pi = Math.Round(pi, 15);
 

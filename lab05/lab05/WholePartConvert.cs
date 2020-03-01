@@ -23,7 +23,7 @@ namespace WholePartConvert {
       var result = "";
       int remains = 0;
 
-      if (number > 0) {
+      if (number >= 0) {
         while (number / numBase != 0) {
           remains = number % numBase;
           result = correct(remains) + result;

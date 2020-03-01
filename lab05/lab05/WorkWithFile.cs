@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
+using CorrectEnter;
 
 namespace WorkWithFile {
   public static class WorkWithFile {
@@ -9,7 +9,7 @@ namespace WorkWithFile {
       fractionalPart = 0.0;
       numBase = 10;
       number = "";
-      var pathPart = @"C:\Users\vmaxi\Desktop\3_6sem\РПКС\labs\lab05\lab05\"; // часть путь к файлу
+      var pathPart = @"C:\Users\vmaxi\Desktop\3_6sem\РПКС\labs\lab05\lab05\"; 
       if (fileName.Length != 0) {
         try {
           using (StreamReader sr = new StreamReader(pathPart + fileName)) {
@@ -25,28 +25,10 @@ namespace WorkWithFile {
               System.Environment.Exit(1);
             }
 
-            if (!double.TryParse(fromFileArr[0], out double number1)) {
-              Console.ForegroundColor = ConsoleColor.Red;
-              Console.WriteLine("Число в файле является некорректным.");
-              System.Environment.Exit(2);
-            } else {
-              number = fromFileArr[0];
-            }
-
-            if (!int.TryParse(fromFileArr[1], out int number2)) {
-              Console.ForegroundColor = ConsoleColor.Red;
-              Console.WriteLine("Система счисления не является числом.");
-              System.Environment.Exit(3);
-            }
-
+            CorrectEnter.CorrectEnter.CorrectEnterFile(fromFileArr[0]); 
+            number = fromFileArr[0];
+            CorrectEnter.CorrectEnter.CorrectEnterBase(fromFileArr[1]);
             numBase = int.Parse(fromFileArr[1]); //сс
-
-            if (numBase < 2 || numBase > 36) {
-              Console.ForegroundColor = ConsoleColor.Red;
-              Console.WriteLine("Система счисления в файле является некорректной.");
-              System.Environment.Exit(4);
-            }
-
             wholePart = int.Parse(fromFileArr[0].Split(',')[0]);
             fractionalPart = double.Parse(fromFileArr[0]) % wholePart;
           }

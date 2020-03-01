@@ -9,7 +9,6 @@ namespace FractionalPartConvert {
     }
 
     public static string FToNS(double fractionalNumber, int numBase) {
-      //для проверки пользоваться методом коррект из другого класса
       var tmpNum = 1.0;
       var result = "";
 

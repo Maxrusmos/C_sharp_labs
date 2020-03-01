@@ -61,9 +61,6 @@ namespace Cardano {
         B = Math.Pow(tmp_negative, (1.0 / 3.0));
       }
 
-      Console.WriteLine(A);
-      Console.WriteLine(B);
-
       if (Q > 0) {
         double y1 = A + B;
         complexArr[0] = y1 - (b / (3.0 * a));

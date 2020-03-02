@@ -27,14 +27,16 @@ namespace FractionalPartConvert {
         count = 0;
       }
 
+      if (periodCount == 1) {
+        return fractionalPart;
+      }
+
       var notPeriod = "";
-      foreach (KeyValuePair<char, int> kvp in periodDict.Where(f => f.Value < (-periodCount / 2.0) - periodCount)) {
-        Console.WriteLine(kvp.Key + " : " + kvp.Value);
+      foreach (KeyValuePair<char, int> kvp in periodDict.Where(f => f.Value == 1)) {
         notPeriod = notPeriod + kvp.Key;
       }
 
       foreach (KeyValuePair<char, int> kvp in periodDict.Where(f => (f.Value == periodCount) || (f.Value == periodCount - 1))) {
-        Console.WriteLine(kvp.Key + " : " + kvp.Value);
         period = period + kvp.Key;
       }
       Console.WriteLine(notPeriod + "(" + period + ")");
@@ -46,7 +48,7 @@ namespace FractionalPartConvert {
       var result = "";
 
       int discharge = 0;
-      while (discharge != 100) {
+      while (discharge != 14) {
         tmpNum = fractionalNumber * numBase;
         result = result + WholePartConvert.WholePartConvert.correct(int.Parse(Convert.ToString(tmpNum).Split(',')[0]));
         if (Convert.ToString(tmpNum).Split(',').Length == 1) {
@@ -56,7 +58,7 @@ namespace FractionalPartConvert {
         }
         discharge++;
       }
-      SearchPeriod(result);
+      result = SearchPeriod(result);
       return result;
     }
   }

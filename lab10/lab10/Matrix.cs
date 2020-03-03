@@ -1,14 +1,20 @@
-﻿using System;
+﻿using CExeption;
+using System;
 using System.Collections;
-using CExeption;
 
 namespace MatrixOp {
-  class Matrix : IEnumerable {
+  class Matrix : IEnumerable, ICloneable {
     private int n;
     private double[,] mass;
     public IEnumerator GetEnumerator() {
       return mass.GetEnumerator();
     }
+
+    public object Clone() {
+      return this.MemberwiseClone();
+    }
+
+    private const double EPS = 1E-9;
 
     // Создаем конструкторы матрицы
     public Matrix() { }
@@ -76,7 +82,7 @@ namespace MatrixOp {
     }
 
     // Умножение матрицы А на матрицу Б
-    public static Matrix compositionMatrix(Matrix a, Matrix b) {
+    public static Matrix CompositionMatrix(Matrix a, Matrix b) {
       Matrix resMass = new Matrix(a.N);
       for (int i = 0; i < a.N; i++)
         for (int j = 0; j < b.N; j++)
@@ -86,12 +92,14 @@ namespace MatrixOp {
       return resMass;
     }
 
-    // Метод вычитания матрицы Б из матрицы А
-    public static Matrix differenceMatrix(Matrix a, Matrix b) {
+    //деление матрицы A на матрицу B
+    public static Matrix DivisionMatrix(Matrix a, Matrix b) {
       Matrix resMass = new Matrix(a.N);
       for (int i = 0; i < a.N; i++) {
         for (int j = 0; j < b.N; j++) {
-          resMass[i, j] = a[i, j] - b[i, j];
+          for (int k = 0; k < b.N; k++) {
+            resMass[i, j] += a[i, k] * 1 / b[k, j];
+          }
         }
       }
       return resMass;
@@ -109,7 +117,7 @@ namespace MatrixOp {
     }
 
     //транспонирование
-    public static Matrix transpositionMatrix(Matrix a) {
+    public static Matrix TranspositionMatrix(Matrix a) {
       Matrix resMass = new Matrix(a.N);
       for (int i = 0; i < a.N; i++) {
         for (int j = 0; j < a.N; j++) {
@@ -117,6 +125,55 @@ namespace MatrixOp {
         }
       }
       return resMass;
+    }
+
+    public static double DeterminantMatrix(Matrix detMatrix) {
+      var det = 1.0;
+      double[][] a = new double[detMatrix.N][];
+      double[][] b = new double[1][];
+      b[0] = new double[detMatrix.N];
+
+      for (int i = 0; i < detMatrix.N; i++) {
+        a[i] = new double[detMatrix.N];
+        for (int j = 0; j < detMatrix.N; j++) {
+          a[i][j] = detMatrix[i, j];
+        }
+      }
+
+      for (int i = 0; i < detMatrix.N; ++i) { 
+        var k = i;
+        for (int j = i + 1; j < detMatrix.N; ++j) {
+          if (Math.Abs(a[j][i]) > Math.Abs(a[k][i]))
+            k = j;
+        }
+         
+        if (Math.Abs(a[k] [i]) < EPS) {
+          det = 0.0;
+          break;
+        }
+
+        b[0] = a[i];
+        a[i] = a[k];
+        a[k] = b[0];
+
+        if (i != k) {
+          det = -det;
+        }
+
+        det *= a[i][i];
+        for (int j = i + 1; j < detMatrix.N; ++j) {
+          a[i][j] /= a[i][i];
+        }
+          
+        for (int j = 0; j < detMatrix.N; ++j) {
+          if ((j != i) && (Math.Abs(a[j][i]) > EPS)) {
+            for (k = i + 1; k < detMatrix.N; ++k) {
+              a[j][k] -= a[i][k] * a[j][i];
+            }               
+          }            
+        }  
+      }
+      return det;
     }
 
     ~Matrix() { }

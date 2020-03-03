@@ -34,12 +34,12 @@ namespace lab10 {
       matrixA.ReadMatrix();
       Console.WriteLine();
 
-      Console.WriteLine("Транспонированная матрица A");
+      Console.WriteLine("Транспонированная матрица A:");
       matrixResult = Matrix.TranspositionMatrix(matrixA);
       matrixResult.ReadMatrix();
       Console.WriteLine();
 
-      Console.WriteLine("Определитель матрицы A");
+      Console.WriteLine("Определитель матрицы A:");
       Console.WriteLine(Matrix.DeterminantMatrix(matrixA));
       Console.WriteLine();
 
@@ -48,22 +48,31 @@ namespace lab10 {
       matrixB.ReadMatrix();
       Console.WriteLine();
 
-      Console.WriteLine("Транспонированная матрица B");
+      Console.WriteLine("Транспонированная матрица B:");
       matrixResult = Matrix.TranspositionMatrix(matrixB);
       matrixResult.ReadMatrix();
       Console.WriteLine();
 
-      Console.WriteLine("Определитель матрицы B");
+      Console.WriteLine("Определитель матрицы B:");
       Console.WriteLine(Matrix.DeterminantMatrix(matrixB));
       Console.WriteLine();
 
       Console.ForegroundColor = ConsoleColor.Yellow;
-      Console.WriteLine("Сумма матриц A и B");
+      Console.WriteLine("Сумма матриц A и B:");
       matrixResult = Matrix.SumMatrix(matrixA, matrixB);
       matrixResult.ReadMatrix();
       Console.WriteLine();
 
-      Console.WriteLine("Умножение матрицы A на матрицу B");
+      Console.WriteLine("Умножение матрицы A на матрицу B:");
+      matrixResult = Matrix.CompositionMatrix(matrixA, matrixB);
+      matrixResult.ReadMatrix();
+      Console.WriteLine();
+
+      Console.WriteLine("Деление матрицы A на матрицу B:");
+      if (Matrix.DeterminantMatrix(matrixB) == 0) {
+        Console.ForegroundColor = ConsoleColor.Red;
+        throw new CustomException("Определитель матрицы B равен нулю. Матрица вырожденная" + Environment.NewLine);
+      }
       matrixResult = Matrix.CompositionMatrix(matrixA, matrixB);
       matrixResult.ReadMatrix();
       Console.WriteLine();

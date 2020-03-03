@@ -64,14 +64,14 @@ namespace MatrixOp {
     public void ReadMatrix() {
       for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-          Console.Write(mass[i, j] + "\t");
+          Console.Write(Math.Round(mass[i, j], 1) + "\t");
         }
         Console.WriteLine();
       }
     }
 
     // Умножение матрицы А на число
-    public static Matrix compositionWhithNum(Matrix a, int num) {
+    public static Matrix CompositionWhithNum(Matrix a, double num) {
       Matrix resMass = new Matrix(a.N);
       for (int i = 0; i < a.N; i++) {
         for (int j = 0; j < a.N; j++) {
@@ -94,15 +94,7 @@ namespace MatrixOp {
 
     //деление матрицы A на матрицу B
     public static Matrix DivisionMatrix(Matrix a, Matrix b) {
-      Matrix resMass = new Matrix(a.N);
-      for (int i = 0; i < a.N; i++) {
-        for (int j = 0; j < b.N; j++) {
-          for (int k = 0; k < b.N; k++) {
-            resMass[i, j] += a[i, k] * 1 / b[k, j];
-          }
-        }
-      }
-      return resMass;
+      return Matrix.CompositionMatrix(a, Matrix.ReverseMatrix(b));
     }
 
     // Сумма матриц
@@ -174,6 +166,43 @@ namespace MatrixOp {
         }  
       }
       return det;
+    }
+
+    public static Matrix ReverseMatrix(Matrix a) {
+      Matrix resMass = new Matrix(a.N);
+      Matrix AlgebraicAdditionsMatrix = new Matrix(a.N);
+      for (int i = 0; i < a.N; i++) {
+        for (int j = 0; j < a.N; j++) {
+          AlgebraicAdditionsMatrix[i, j] = Math.Pow(-1, i + j) * DeterminantMatrix(DeleteRowCol(i, j, a));
+        }
+      }
+      AlgebraicAdditionsMatrix = Matrix.TranspositionMatrix(AlgebraicAdditionsMatrix);
+      resMass = Matrix.CompositionWhithNum(AlgebraicAdditionsMatrix, 1 / Matrix.DeterminantMatrix(a));
+      return resMass;
+    }
+
+    public static Matrix DeleteRowCol(int row, int col, Matrix a) { 
+      Matrix resMass = new Matrix(a.N - 1);
+      for (int i = 0; i < a.N-1; i++) {
+        if (i < row) {
+          for (int j = 0; j < a.N - 1; j++) { 
+            if (j < col) {
+              resMass[i, j] = a[i, j];
+            } else {
+              resMass[i, j] = a[i, j + 1];
+            }
+          }
+        } else {
+          for (int j = 0; j < a.N - 1; j++) {
+            if (j < col) {
+              resMass[i, j] = a[i + 1, j];
+            } else {
+              resMass[i, j] = a[i + 1, j + 1];
+            }
+          }
+        }
+      }
+      return resMass;
     }
 
     ~Matrix() { }

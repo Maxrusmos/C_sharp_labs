@@ -1,11 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Collections;
+using CExeption;
 
-namespace lab10 {
-  class Matrix {
+namespace MatrixOp {
+  class Matrix : IEnumerable {
     private int n;
-    private int[,] mass;
+    private double[,] mass;
+    public IEnumerator GetEnumerator() {
+      return mass.GetEnumerator();
+    }
 
     // Создаем конструкторы матрицы
     public Matrix() { }
@@ -24,10 +27,10 @@ namespace lab10 {
     // Задаем аксессоры для работы с полями вне класса Matrix
     public Matrix(int n) {
       this.n = n;
-      mass = new int[this.n, this.n];
+      mass = new double[this.n, this.n];
     }
 
-    public int this[int i, int j] {
+    public double this[int i, int j] {
       get {
         return mass[i, j];
       }
@@ -40,8 +43,13 @@ namespace lab10 {
     public void WriteMatrix() {
       for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-          Console.WriteLine("Введите элемент матрицы " + i + 1 + " : " + j + 1);
-          mass[i, j] = Convert.ToInt32(Console.ReadLine());
+          Console.Write("Введите элемент матрицы " + (i + 1) + " : " + (j + 1) + ": ");
+          var matrixElem = Console.ReadLine();
+          if (!double.TryParse(matrixElem, out double number)) {
+            Console.ForegroundColor = ConsoleColor.Red;
+            throw new CustomException("Элемент матрицы не является числом" + Environment.NewLine);
+          }
+          mass[i, j] = Convert.ToDouble(matrixElem);
         }
       }
     }
@@ -100,7 +108,7 @@ namespace lab10 {
       return resMass;
     }
 
-    //транспоирование
+    //транспонирование
     public static Matrix transpositionMatrix(Matrix a) {
       Matrix resMass = new Matrix(a.N);
       for (int i = 0; i < a.N; i++) {

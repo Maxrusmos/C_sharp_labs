@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SearchNeedWord {
   public class SearchNeedWord {
-    public static void SearchWord(string[] strArr, string word, out string[] newStrArr, out int counter) {
+    public static void SearchWord(string[] strArr, string word, string changeWord, out string[] newStrArr, out int counter) {
       counter = 0;
       newStrArr = strArr;
 
@@ -14,7 +12,7 @@ namespace SearchNeedWord {
         }
       }
       if (counter != 0) {
-        newStrArr[strArr.Length - 2] = word;
+        newStrArr[strArr.Length - 2] = changeWord;
       }
     }
   }

@@ -1,6 +1,7 @@
 ﻿using System;
 using MatrixOp;
 using CExeption;
+using PolynomOp;
 
 namespace lab10 {
   class Program {

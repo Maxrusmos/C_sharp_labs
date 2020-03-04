@@ -1,6 +1,7 @@
 ﻿using CExeption;
 using System;
 using System.Collections;
+using System.Linq;
 
 namespace MatrixOp {
   class Matrix : IEnumerable, ICloneable {
@@ -16,13 +17,12 @@ namespace MatrixOp {
 
     private const double EPS = 1E-9;
 
-    // Создаем конструкторы матрицы
     public Matrix() { }
+
     public int N {
       get {
         return n;
       }
-
       set {
         if (value > 0) {
           n = value;
@@ -30,10 +30,32 @@ namespace MatrixOp {
       }
     }
 
-    // Задаем аксессоры для работы с полями вне класса Matrix
     public Matrix(int n) {
       this.n = n;
       mass = new double[this.n, this.n];
+    }
+
+    public Matrix(int n, int lowerBorder, int upperBorder) {
+      this.n = n;
+      Random r = new Random();
+      mass = new double[this.n, this.n];
+      for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+          mass[i, j] = r.Next(lowerBorder, upperBorder);
+        }
+      }
+    }
+
+    public Matrix(int n, params int[] elems) {
+      this.n = n;
+      if (n != elems.Length) {
+        Console.ForegroundColor = ConsoleColor.Red;
+        throw new CustomException("Неверное колическтво аргументов" + Environment.NewLine);
+      }
+      mass = new double[this.n, this.n];
+      for (int i = 0; i < elems.Length; i++) {
+        mass[i / n, i % n] = elems[i];
+      }
     }
 
     public double this[int i, int j] {

@@ -5,8 +5,11 @@ using System.Text;
 namespace UpperWord {
   public static class UpperWord {
     public static string SeachKUpper(string kStr, string[]strArr) {
-      int k = int.Parse(kStr);
+      if (!int.TryParse(kStr, out int number)) {
+        throw new ArgumentException("k не число", nameof(kStr));
+      }
 
+      int k = int.Parse(kStr);
       var counter = 0;
       for (int i = 0; i < strArr.Length; i++) {
         if (strArr[i][0] == strArr[i].ToUpper()[0]) {
@@ -15,9 +18,10 @@ namespace UpperWord {
       }
 
       if (k > counter) {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("В строке нет столько слов начинающихся с заглавной буквы.");
-        System.Environment.Exit(2);
+        throw new ArgumentException("В строке нет столько слов начинающихся с больших букв", nameof(strArr));
+      }
+      if (k < 0) {
+        throw new ArgumentException("K не может быть отрицательным", nameof(k));
       }
 
       string[] strArrUpper = new string[counter + 1];

@@ -16,7 +16,12 @@ namespace lab05 {
       var Base = 0;
 
       if (fileName.Length != 0) {
-        WorkWithFile.WorkWithFile.FileParse(fileName, out wholePart, out fractionalPart, out numberDecimal, out Base);
+        try {
+          WorkWithFile.WorkWithFile.FileParse(fileName, out wholePart, out fractionalPart, out numberDecimal, out Base);
+        }
+        catch (ArgumentException ex) {
+          Console.WriteLine(ex.Message);
+        }
       } else {
         Console.Write("Введите число, которое хотите перевести из десятичной в другую систему счисления: ");
         numberDecimal = Console.ReadLine();

@@ -1,35 +1,50 @@
 ﻿using System;
-using SearchNeedWord;
 using UpperWord;
 
 namespace lab08 {
   class Program {
     static void Main(string[] args) {
-      var mainStr = "lol Kek Lol kek chebureck Lol lol rr chebureck kek kek Chebureck lol g chebureck Lol LOL Kek";
-      var tmpArr = mainStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-      var strArr = mainStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+      Console.Write("Введите произвольную строку: ");
+      var mainStr = Console.ReadLine();
+      var strArr = mainStr.Split(new char[] { ' ' , '\t' }, StringSplitOptions.RemoveEmptyEntries);
       var newStrArr = strArr;
-      var counter = 0;
+
+      if (mainStr.Length == 0) {
+        Console.WriteLine("Вы ничего не ввели");
+        Environment.Exit(1);
+      }
 
       Console.ForegroundColor = ConsoleColor.Yellow;
       Console.WriteLine("Исходная строка: " + mainStr);
       Console.Write("Введите слово: ");
       var word = Console.ReadLine();
+      var wordsCount = default(int);
 
-      SearchNeedWord.SearchNeedWord.SearchWord(strArr, word, "", out newStrArr, out counter);
-
-      if (counter == 0) {
-        Console.WriteLine("В строке нет введенного слова.");
-      } else {
-        Console.WriteLine("Количество таких слов в строке: " + counter);
+      try {
+        wordsCount = SearchNeedWord.SearchNeedWord.SearchWord(strArr, word);
+        Console.WriteLine("Количество таких слов в строке: " + wordsCount);
+      }
+      catch (ArgumentNullException ex) {
+        Console.WriteLine(ex.Message);
+      }
+      catch (ArgumentException ex) {
+        Console.WriteLine(ex.Message);
       }
 
       Console.Write("Введите слово, на которое хотите поменять предпоследнее слово в строке: ");
       var changeWord = Console.ReadLine();
-      SearchNeedWord.SearchNeedWord.SearchWord(strArr, word, changeWord, out newStrArr, out counter);
-      Console.Write("Измененная строка: ");
-      for (int i = 0; i < newStrArr.Length; i++) {
-        Console.Write(newStrArr[i] + " ");
+      try {
+        SearchNeedWord.SearchNeedWord.Change(strArr, changeWord);
+        Console.Write("Измененная строка: ");
+        for (int i = 0; i < newStrArr.Length; i++) {
+          Console.Write(newStrArr[i] + " ");
+        }
+      }
+      catch (ArgumentNullException ex) {
+        Console.WriteLine(ex.Message);
+      }
+      catch (ArgumentException ex) {
+        Console.WriteLine(ex.Message);
       }
 
       Console.ForegroundColor = ConsoleColor.Cyan;
@@ -37,12 +52,14 @@ namespace lab08 {
       Console.Write("Введите k: ");
       var kWord = Console.ReadLine();
 
-      if (!int.TryParse(kWord, out int number)) {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("k не является числом");
-        System.Environment.Exit(1);
+      try {
+        var str = UpperWord.UpperWord.SeachKUpper(kWord, strArr);
+        Console.WriteLine("Слово с заглавной буквы под номером " + kWord + ": " + str);
       }
-      Console.WriteLine("Слово с заглавной буквы под номером " + kWord + ": " + UpperWord.UpperWord.SeachKUpper(kWord, tmpArr)); 
+      catch (ArgumentException ex) {    
+        Console.WriteLine(ex.Message);
+      }
+      Console.Read();
     }
   }
 }

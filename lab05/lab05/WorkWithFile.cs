@@ -14,28 +14,25 @@ namespace WorkWithFile {
         try {
           using (StreamReader sr = new StreamReader(pathPart + fileName)) {
             var fromFileArr = sr.ReadToEnd().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
             if (fromFileArr.Length != 2) {
               Console.ForegroundColor = ConsoleColor.Red;
               if (fromFileArr.Length > 2) {
-                Console.WriteLine("В файле есть что-то лишнее.");
+                throw new ArgumentException("В файле есть что-то лишнее" + Environment.NewLine);
               } else {
-                Console.WriteLine("В файле чего-то не хватает.");
+                throw new ArgumentException("В файле чего то не хватает" + Environment.NewLine);
               }
-              System.Environment.Exit(1);
             }
 
             CorrectEnter.CorrectEnter.CorrectEnterFile(fromFileArr[0]); 
             number = fromFileArr[0];
             CorrectEnter.CorrectEnter.CorrectEnterBase(fromFileArr[1]);
-            numBase = int.Parse(fromFileArr[1]); //сс
+            numBase = int.Parse(fromFileArr[1]); 
             wholePart = int.Parse(fromFileArr[0].Split(',')[0]);
             fractionalPart = double.Parse(fromFileArr[0]) % wholePart;
           }
         }
-        catch (Exception e) {
+        catch (FileNotFoundException e) {
           Console.WriteLine(e.Message);
-          System.Environment.Exit(5);
         }
       }
     }

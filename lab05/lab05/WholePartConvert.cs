@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Linq;
 
-namespace WholePartConvert {
-  public static class WholePartConvert {
+namespace WholePartConvert { 
+  public class WholePartConvert {
+    static Lazy<string[]> lazy = new Lazy<string[]>(() => Enumerable.Range('A', 26)
+        .Select(c => ((char)c).ToString())
+        .ToArray());
+
     public static string correct(int remains) {
-      string[] letters = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-                           "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+      string[] letters = lazy.Value;
       var remainStr = "";
       var result = "";
 

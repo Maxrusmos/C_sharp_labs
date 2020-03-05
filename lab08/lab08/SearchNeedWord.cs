@@ -1,19 +1,20 @@
 ﻿using System;
+using System.Linq;
 
 namespace SearchNeedWord {
   public class SearchNeedWord {
-    public static void SearchWord(string[] strArr, string word, string changeWord, out string[] newStrArr, out int counter) {
-      counter = 0;
-      newStrArr = strArr;
+    public static int SearchWord(string[] strArr, string word) {
+      return strArr.Count(str => str.Equals(word));
+    }
 
-      for (int i = 0; i < strArr.Length; i++) {
-        if (strArr[i] == word) {
-          counter++;
-        }
+    public static void Change(string[] strArr, string word) {
+      if (strArr is null) {
+        throw new ArgumentNullException("Strings array is null.", nameof(strArr));
       }
-      if (counter != 0) {
-        newStrArr[strArr.Length - 2] = changeWord;
+      if (strArr.Length < 2) {
+        throw new ArgumentException("Strings array length is lower than 2");
       }
+      strArr[strArr.Length - 2] = word;
     }
   }
 }

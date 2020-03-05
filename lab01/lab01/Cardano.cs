@@ -54,7 +54,7 @@ namespace Cardano {
       } else {
         A = Math.Pow(tmp_positive, (1.0 / 3.0));
       }
-
+      
       if (tmp_negative < 0) {
         B = -Math.Pow(-tmp_negative, (1.0 / 3.0));
       } else {

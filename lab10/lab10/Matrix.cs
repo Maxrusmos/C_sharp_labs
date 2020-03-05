@@ -1,7 +1,6 @@
 ﻿using CExeption;
 using System;
 using System.Collections;
-using System.Linq;
 
 namespace MatrixOp {
   class Matrix : IEnumerable, ICloneable {

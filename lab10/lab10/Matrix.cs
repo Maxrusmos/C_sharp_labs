@@ -1,43 +1,48 @@
 ﻿using CExeption;
 using System;
 using System.Collections;
+using System.Text;
 
 namespace MatrixOp {
-  class Matrix : IEnumerable, ICloneable {
-    private int n;
+  public sealed class Matrix : IEnumerable, ICloneable {
     private double[,] mass;
+
     public IEnumerator GetEnumerator() {
       return mass.GetEnumerator();
     }
 
     public object Clone() {
-      return this.MemberwiseClone();
+      double[,] newMass = new double[mass.Length, mass.Length];
+      for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; i++) {
+          newMass[i, j] = mass[i, j];
+        }
+      }
+      return newMass;
     }
 
-    private const double EPS = 1E-9;
+    private const double EPS = 1E-15;
 
     public Matrix() { }
 
-    public int N {
-      get {
-        return n;
-      }
-      set {
-        if (value > 0) {
-          n = value;
-        }
-      }
-    }
+    public int N =>
+      mass.GetLength(0);
 
     public Matrix(int n) {
-      this.n = n;
-      mass = new double[this.n, this.n];
+      if (n < 0) {
+        Console.WriteLine("Размерность не может быть отрицательной" + Environment.NewLine);
+        Environment.Exit(1);
+      }
+      mass = new double[n, n];
     }
 
     public Matrix(int n, int lowerBorder, int upperBorder) {
-      this.n = n;
+      if (n < 0) {
+        Console.WriteLine("Размерность не может быть отрицытельной" + Environment.NewLine);
+        Environment.Exit(2);
+      }
       Random r = new Random();
-      mass = new double[this.n, this.n];
+      mass = new double[n, n];
       for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
           mass[i, j] = r.Next(lowerBorder, upperBorder);
@@ -46,8 +51,11 @@ namespace MatrixOp {
     }
 
     public Matrix(int n, params int[] elems) {
-      this.n = n;
-      mass = new double[this.n, this.n];
+      if (n < 0) {
+        Console.WriteLine("Размерность не может быть отрицательной" + Environment.NewLine);
+        Environment.Exit(1);
+      }
+      mass = new double[n, n];
       for (int i = 0; i < elems.Length; i++) {
         mass[i / n, i % n] = elems[i];
       }
@@ -62,10 +70,9 @@ namespace MatrixOp {
       }
     }
 
-    // Ввод матрицы с клавиатуры
     public void WriteMatrix() {
-      for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
+      for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
           Console.Write("Введите элемент матрицы " + (i + 1) + " : " + (j + 1) + ": ");
           var matrixElem = Console.ReadLine();
           if (!double.TryParse(matrixElem, out double number)) {
@@ -77,14 +84,16 @@ namespace MatrixOp {
       }
     }
 
-    // Вывод матрицы
-    public void ReadMatrix() {
-      for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-          Console.Write(Math.Round(mass[i, j], 1) + "\t");
-        }
-        Console.WriteLine();
+    //вывод матрицы
+    public override string ToString() {
+      StringBuilder strMatrix = new StringBuilder();
+      for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+          strMatrix.Append(Math.Round(mass[i, j], 1).ToString() + "\t");
+        }      
+        strMatrix.Append("\n");       
       }
+      return strMatrix.ToString();
     }
 
     // Умножение матрицы А на число
@@ -100,7 +109,10 @@ namespace MatrixOp {
 
     // Умножение матрицы А на матрицу Б
     public static Matrix CompositionMatrix(Matrix a, Matrix b) {
-      Matrix resMass = new Matrix(a.N);
+      if (a.N != b.N) {
+        throw new CustomException($"Размерности матриц не совпадают{Environment.NewLine}");
+      }
+      Matrix resMass = new Matrix(a.N); 
       for (int i = 0; i < a.N; i++)
         for (int j = 0; j < b.N; j++)
           for (int k = 0; k < b.N; k++)
@@ -116,6 +128,9 @@ namespace MatrixOp {
 
     // Сумма матриц
     public static Matrix SumMatrix(Matrix a, Matrix b) {
+      if (a.N != b.N) {
+        throw new CustomException("Размерности матриц не совпадают" + Environment.NewLine);
+      }
       Matrix resMass = new Matrix(a.N);
       for (int i = 0; i < a.N; i++) {
         for (int j = 0; j < b.N; j++) {
@@ -139,6 +154,7 @@ namespace MatrixOp {
     //определитель
     public static double DeterminantMatrix(Matrix detMatrix) {
       var det = 1.0;
+
       double[][] a = new double[detMatrix.N][];
       double[][] b = new double[1][];
       b[0] = new double[detMatrix.N];
@@ -190,8 +206,8 @@ namespace MatrixOp {
     public static Matrix ReverseMatrix(Matrix a) {
       Matrix resMass = new Matrix(a.N);
       Matrix AlgebraicAdditionsMatrix = new Matrix(a.N);
-      if (DeterminantMatrix(a) == 0) {
-        throw new CustomException("Определитель матрицы равен 0. Матрицы вырожденная" + Environment.NewLine);
+      if (Math.Abs(DeterminantMatrix(a)) < EPS) {
+        throw new CustomException("Определитель матрицы равен 0. Матрицa вырожденная" + Environment.NewLine);
       }
       for (int i = 0; i < a.N; i++) {
         for (int j = 0; j < a.N; j++) {
@@ -227,7 +243,5 @@ namespace MatrixOp {
       }
       return resMass;
     }
-
-    ~Matrix() { }
   }
 }

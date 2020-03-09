@@ -47,10 +47,6 @@ namespace MatrixOp {
 
     public Matrix(int n, params int[] elems) {
       this.n = n;
-      if (n != elems.Length) {
-        Console.ForegroundColor = ConsoleColor.Red;
-        throw new CustomException("Неверное колическтво аргументов" + Environment.NewLine);
-      }
       mass = new double[this.n, this.n];
       for (int i = 0; i < elems.Length; i++) {
         mass[i / n, i % n] = elems[i];
@@ -140,6 +136,7 @@ namespace MatrixOp {
       return resMass;
     }
 
+    //определитель
     public static double DeterminantMatrix(Matrix detMatrix) {
       var det = 1.0;
       double[][] a = new double[detMatrix.N][];
@@ -189,9 +186,13 @@ namespace MatrixOp {
       return det;
     }
 
+    //обратная матрица
     public static Matrix ReverseMatrix(Matrix a) {
       Matrix resMass = new Matrix(a.N);
       Matrix AlgebraicAdditionsMatrix = new Matrix(a.N);
+      if (DeterminantMatrix(a) == 0) {
+        throw new CustomException("Определитель матрицы равен 0. Матрицы вырожденная" + Environment.NewLine);
+      }
       for (int i = 0; i < a.N; i++) {
         for (int j = 0; j < a.N; j++) {
           AlgebraicAdditionsMatrix[i, j] = Math.Pow(-1, i + j) * DeterminantMatrix(DeleteRowCol(i, j, a));
@@ -202,6 +203,7 @@ namespace MatrixOp {
       return resMass;
     }
 
+    //миноры
     public static Matrix DeleteRowCol(int row, int col, Matrix a) { 
       Matrix resMass = new Matrix(a.N - 1);
       for (int i = 0; i < a.N-1; i++) {

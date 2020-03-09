@@ -1,7 +1,6 @@
 ﻿using System;
 using MatrixOp;
 using CExeption;
-using PolynomOp;
 
 namespace lab10 {
   class Program {
@@ -12,22 +11,42 @@ namespace lab10 {
 
       if (!int.TryParse(nn, out int number)) {
         Console.ForegroundColor = ConsoleColor.Red;
-        throw new CustomException("Размерность матриц не является числом " + Environment.NewLine);
+        Console.WriteLine("Размерность не является числом");
+        Environment.Exit(1);
       }
 
       int n = Convert.ToInt32(nn);
+      if (n < 0) {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Размерность не может быть отрицательной");
+        Environment.Exit(2);
+      }
       Console.WriteLine();
+
       Matrix matrixA = new Matrix(n);
       Matrix matrixB = new Matrix(n);
       Matrix matrixResult = new Matrix(n);
 
       Console.ForegroundColor = ConsoleColor.Magenta;
       Console.WriteLine("Ввод первой матрицы (A)");
-      matrixA.WriteMatrix();
+      try {
+        matrixA.WriteMatrix();
+      }
+      catch (CustomException ex) {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(ex.Message);
+      }
       Console.WriteLine();
+
       Console.ForegroundColor = ConsoleColor.Cyan;
       Console.WriteLine("Ввод второй матрицы (B)");
-      matrixB.WriteMatrix();
+      try {
+        matrixB.WriteMatrix();
+      }
+      catch (CustomException ex) {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(ex.Message);
+      }
       Console.WriteLine();
 
       Console.ForegroundColor = ConsoleColor.Magenta;
@@ -70,13 +89,27 @@ namespace lab10 {
       Console.WriteLine();
 
       Console.WriteLine("Деление матрицы A на матрицу B:");
-      if (Matrix.DeterminantMatrix(matrixB) == 0) {
-        Console.ForegroundColor = ConsoleColor.Red;
-        throw new CustomException("Определитель матрицы B равен нулю. Матрица вырожденная" + Environment.NewLine);
+      try {
+        matrixResult = Matrix.DivisionMatrix(matrixA, matrixB);
+        matrixResult.ReadMatrix();
       }
-      matrixResult = Matrix.CompositionMatrix(matrixA, matrixB);
-      matrixResult.ReadMatrix();
+      catch (CustomException ex) {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(ex.Message);
+      }
       Console.WriteLine();
+
+      //Console.ForegroundColor = ConsoleColor.Yellow;
+      //Console.WriteLine("Проверка конструкторов");
+      //try {
+      //  Matrix A = new Matrix(2, 1, 2, 3);
+      //  A.ReadMatrix();
+      //}
+      //catch(CustomException ex) {
+      //  Console.ForegroundColor = ConsoleColor.Red;
+      //  Console.WriteLine(ex.Message);
+      //}
+      //Console.WriteLine();
     }
   }
 }

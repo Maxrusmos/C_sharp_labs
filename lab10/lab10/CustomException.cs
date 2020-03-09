@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace CExeption {
-  public class CustomException : Exception {
+  public class CustomException : ArgumentException {
     public CustomException(string message) : base(message) { }
   }
 }

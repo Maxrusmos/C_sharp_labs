@@ -39,8 +39,8 @@ namespace lab09 {
         Environment.Exit(4);
       }
 
-      Console.WriteLine(Dichotomy.Dichotomy.DichotomySolve(double.Parse(lowerBorder), 
-        double.Parse(upperBorder), GetEq, double.Parse(accuracy))); 
+      Console.WriteLine(Dichotomy.Dichotomy.DichotomySolve(double.Parse(lowerBorder),
+        double.Parse(upperBorder), GetEq, double.Parse(accuracy)));
     }
   }
 }

@@ -5,27 +5,38 @@ namespace Dichotomy {
     public delegate double delegateEquation(double x);
     private const double Eps = 1e-15;
 
-    public static string DichotomySolve(double borderFirst, double borderSecond, delegateEquation GetEq, double accuracy) {
-      var min = borderFirst;
-      var max = borderSecond;
-      var intervalLength = borderSecond - borderFirst;
-      var err = intervalLength;
-      var x = 0.0;
+    public static double DichotomySolve(double borderFirst, double borderSecond, delegateEquation GetEq, double accuracy) {
+      double a = borderFirst, b = borderSecond, c = 0, fa, fb, fc;
+     
+      fa = Convert.ToDouble(GetEq(a));
+      fb = Convert.ToDouble(GetEq(b));
 
-      while (err > accuracy && GetEq(x) != Eps) {
-        x = (min + max) / 2;
-        if (GetEq(min) * GetEq(x) < Eps) {
-          max = x;
-        } else if (GetEq(x) * GetEq(max) < Eps) {
-          min = x;
-        } 
-        err = (max - min) / intervalLength;
+      if (fa * fb > 0) {
+        Console.WriteLine("На данном промежутке нет корней");
+        Environment.Exit(1);
       }
-      return Convert.ToString(x);
+
+      if (Math.Abs(fa) < accuracy) {
+        return a;       
+      }
+
+      if (Math.Abs(fb) < accuracy) {
+        return b;
+      }
+
+      do {
+        c = a + 0.5 * (b - a);
+        fc = Convert.ToDouble(GetEq(c));
+        if (Math.Abs(fc) < accuracy) break;
+        if (fa * fc < 0) b = c; else a = c;
+      }
+      while (Math.Abs(a - b) > accuracy);
+      return c;
     }
 
-    public static double EquationGet(double x){
-      return Math.Cos(x) + x;
+    public static double EquationGet(double x) {
+      return Math.Pow(x, 3) - 3 * x + 1;
     }
+
   }
 }

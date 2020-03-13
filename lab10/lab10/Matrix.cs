@@ -70,6 +70,7 @@ namespace MatrixOp {
       }
     }
 
+    //ввод матрицы
     public void WriteMatrix() {
       for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
@@ -91,7 +92,7 @@ namespace MatrixOp {
         for (int j = 0; j < N; j++) {
           strMatrix.Append(Math.Round(mass[i, j], 1).ToString() + "\t");
         }      
-        strMatrix.Append("\n");       
+        strMatrix.Append(Environment.NewLine);       
       }
       return strMatrix.ToString();
     }

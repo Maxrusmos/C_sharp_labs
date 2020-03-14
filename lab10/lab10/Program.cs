@@ -121,7 +121,7 @@ namespace lab10 {
       //Console.WriteLine();
 
 
-      var dot = 0.0;
+      var dot = 0.0; //точка, в которой искать зачение полинома
 
       //ввод первого полинома
       Console.ForegroundColor = ConsoleColor.Magenta;
@@ -209,22 +209,11 @@ namespace lab10 {
       Console.Write("A - B = " + (A - B).ToString());
       Console.WriteLine();
 
-      Console.Write("A * B = " + Polinom.PolinomMultiplication(A, B).ToString());
+      Console.Write("A * B = " + (A  * B).ToString());
       Console.WriteLine();
 
-      ////вывод операций
-      //A = new Mnogochlen(Matrix1, power);
-      //B = new Mnogochlen(Matrix2, step2);
-      //Mnogochlen C = A + B;
-      //Mnogochlen D = A - B;
-      //Mnogochlen E = A * B;
-      //Console.WriteLine();
-      //Console.Write("A + B = " + C.ToString());
-      //Console.WriteLine();
-      //Console.Write("A - B = " + D.ToString());
-      //Console.WriteLine();
-      //Console.Write("A * B = " + E.ToString());
-      //Console.WriteLine();
+      Console.Write("Композиция A и B = " + Polinom.PolinomComposition(A, B).ToString());
+      Console.WriteLine();
     }
   }
 }

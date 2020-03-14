@@ -82,16 +82,71 @@ namespace PolynomOp {
 
     //произведение полиномов
     public static Polinom PolinomMultiplication(Polinom A, Polinom B) {
-      var resultPolinomArrPower = new double[ArrayParse.SearchMaxElem(A._power) + ArrayParse.SearchMaxElem(B._power)];
-      
+      var maxFirst = ArrayParse.SearchMaxElem(A._power);
+      var maxSecond = ArrayParse.SearchMaxElem(B._power);
+      var resultPower = maxFirst + maxSecond;
+      var resultPolinomArrPower = new int[resultPower + 1];
+      var resultPolinomArrKoef = new double[resultPower + 1];
 
       for (int i = 0; i < resultPolinomArrPower.Length; i++) {
-        resultPolinomArrPower[i] = A._power[i] + B._power[i];
+        resultPolinomArrPower[i] = resultPower--;
       }
-      foreach (double kek in resultPolinomArrPower) {
-        Console.WriteLine(kek);
+
+      for (int i = 0; i < A._koef.Length; i++) {
+        for (int j = 0; j < B._koef.Length; j++) {
+          resultPolinomArrKoef[i + j] += A._koef[i] * B._koef[j];
+        }
       }
-      return A;
+      var resultPolinom = new Polinom(resultPolinomArrKoef, resultPolinomArrPower);
+      return resultPolinom;
+    }
+
+    public static Polinom operator *(Polinom A, Polinom B) {
+      return PolinomMultiplication(A, B);
+    }
+
+    //композиция полиномов
+    public static Polinom PolinomComposition(Polinom A, Polinom B) {
+      var maxResultPower = ArrayParse.SearchMaxElem(A._power) * ArrayParse.SearchMaxElem(B._power);
+      var resultPolinomArrPower = new int[maxResultPower + 1];
+      for (int i = 0; i < resultPolinomArrPower.Length; i++) {
+        resultPolinomArrPower[i] = maxResultPower--;
+      }
+
+      var resultPolinomArrKoef = new double[resultPolinomArrPower.Length];
+      Polinom[] polinomArr = new Polinom[A._power.Length - 1]; 
+      for (int i = 0; i < A._power.Length - 1; i++) {
+        polinomArr[i] = PolinomPow(B, A._power[i]);
+      }
+
+      for (int i = 0; i < A._koef.Length - 1; i++) {
+        polinomArr[i] = PolinomMultiNum(polinomArr[i], A._koef[i]);
+      }
+
+      var tmpDouble = new double[(A._koef.Length - 1) * (B._koef.Length - 1)];
+      Polinom resultPolinom = new Polinom(tmpDouble, resultPolinomArrPower);
+      for (int i = 0; i < polinomArr.Length; i++) {
+        resultPolinom += polinomArr[i];
+      }
+      return resultPolinom;
+    } 
+
+    //возведение полинома в степень
+    public static Polinom PolinomPow(Polinom A, int pow) {
+      Polinom resultPolinom = A;
+      for (int i = 1; i < pow; i++) {
+        resultPolinom *= A;
+      }
+      return resultPolinom;
+    }
+
+    //умножение полинома на число
+    public static Polinom PolinomMultiNum(Polinom A, double num) {
+      Polinom resultPolinom = A;
+      for (int i = 0; i < A._koef.Length; i++) {
+        resultPolinom._koef[i] = A._koef[i] * num; 
+      }
+      return resultPolinom;
     }
 
     //значение плоинома в точке

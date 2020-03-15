@@ -136,7 +136,7 @@ namespace ComplexOp {
 
     //вывод
     public override string ToString() {
-      return "(" + this._real + ",  " + this._imaginary + ")";
+      return "Complex(" + this._real + ",  " + this._imaginary + ")";  
     }
   }
 }

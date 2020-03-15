@@ -12,9 +12,9 @@ namespace VectorOp {
     public Vector() { }
 
     public Vector(T x, T y, T z) {
-      this._x = x;
-      this._y = y;
-      this._z = z;
+      _x = x;
+      _y = y;
+      _z = z;
     }
 
     //сумма
@@ -67,9 +67,19 @@ namespace VectorOp {
       return result;
     }
 
+    //скалярное произведение
+    public static dynamic VectorScalarProduct(Vector<T> A, Vector<T> B) {
+      return (dynamic)A._x * (dynamic)B._x + (dynamic)A._y * (dynamic)B._y + (dynamic)A._z * (dynamic)B._z;
+    }
+
+    ////ортогонализация 
+    //public static dynamic VectorOrthogonalization() {
+
+    //}
+
     //вывод
     public override string ToString() {
-      return "vector(" + this._x + ";  " + this._y + ";  " + this._z + ")";
+      return "vector(" + _x + ";  " + _y + ";  " + _z + ")";
     }
   }
 }

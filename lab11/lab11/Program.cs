@@ -18,7 +18,7 @@ namespace lab11 {
       Vector<int> complexVector1 = new Vector<int>(3, 2, 2);
       Vector<ComplexNum> complexVector2 = new Vector<ComplexNum>(B, A, A);
       Console.WriteLine(Vector<ComplexNum>.VectorAbs(complexVector2).ToString());
-     // Console.WriteLine((complexVector1 * complexVector2).ToString());
+      Console.WriteLine(complexVector2.ToString());
     }
   }
 }

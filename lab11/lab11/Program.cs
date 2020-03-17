@@ -15,10 +15,21 @@ namespace lab11 {
       //Console.WriteLine((A / B).ToString());
       //Console.WriteLine(A.ToString());
 
+      var intArr = new int[4] { 1, 2, 2, -1 };
+
       Vector<int> complexVector1 = new Vector<int>(3, 2, 2);
       Vector<ComplexNum> complexVector2 = new Vector<ComplexNum>(B, A, A);
-      Console.WriteLine(Vector<ComplexNum>.VectorAbs(complexVector2).ToString());
-      Console.WriteLine(complexVector2.ToString());
+
+      Console.WriteLine(Vector<int>.kek(complexVector1));
+
+
+
+      var myVectorArr = new Vector<double>[3];
+      myVectorArr[0] = new Vector<double>(1, 0, 1);
+      myVectorArr[1] = new Vector<double>(-1, 1, 0);
+      myVectorArr[2] = new Vector<double>(0, 2, 1);
+
+      Console.WriteLine(Vector<double>.VectorOrthogonalization(myVectorArr)[2].ToString());
     }
   }
 }

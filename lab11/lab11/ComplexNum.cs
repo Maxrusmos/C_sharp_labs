@@ -12,19 +12,19 @@ namespace ComplexOp {
     private double _real, _imaginary;
 
     public ComplexNum() {
-      this._real = 0.0;
-      this._imaginary = 0.0;
+      _real = 0.0;
+      _imaginary = 0.0;
     }
 
     public ComplexNum(double real, double imaginary) {
-      this._real = real;
-      this._imaginary = imaginary;
+      _real = real;
+      _imaginary = imaginary;
     }
 
     public ComplexNum(int bottomBorder, int topBorder) {
       Random rnd = new Random();
-      this._real = bottomBorder + (rnd.NextDouble() * (topBorder - bottomBorder));
-      this._imaginary = bottomBorder + (rnd.NextDouble() * (topBorder - bottomBorder));
+      _real = bottomBorder + (rnd.NextDouble() * (topBorder - bottomBorder));
+      _imaginary = bottomBorder + (rnd.NextDouble() * (topBorder - bottomBorder));
     }
 
     //сумма
@@ -136,7 +136,7 @@ namespace ComplexOp {
 
     //вывод
     public override string ToString() {
-      return "Complex(" + this._real + ",  " + this._imaginary + ")";  
+      return "Complex(" + this._real + "   " + this._imaginary + ")";  
     }
   }
 }

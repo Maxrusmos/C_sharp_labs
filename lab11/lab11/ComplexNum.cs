@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using EventCustomOp;
 
 namespace ComplexOp {
@@ -59,6 +57,18 @@ namespace ComplexOp {
       return ComplexComposition(A, B);
     }
 
+    //произведение с действительным числом
+    public static ComplexNum ComplexCompositionNum(ComplexNum A, dynamic num) {
+      var resultComplex = new ComplexNum();
+      resultComplex._real = A._real * num;
+      resultComplex._imaginary = A._imaginary;
+      return resultComplex;
+    }
+
+    public static ComplexNum operator *(ComplexNum A, dynamic num) {
+      return ComplexCompositionNum(A, num);
+    }
+
     //частное
     public static ComplexNum ComplexDivision(ComplexNum A, ComplexNum B) {
       var resultComplex = new ComplexNum();
@@ -75,10 +85,10 @@ namespace ComplexOp {
       return ComplexDivision(A, B);
     }
 
+    //показать сообзение о деление на ноль
     public static void ShowMessage(EventCustom obj) {
       Console.ForegroundColor = ConsoleColor.Red;
-      Console.WriteLine(obj.ToString());
-      Environment.Exit(1);
+      throw new ArgumentException(obj.ToString());
     }
 
     //модуль

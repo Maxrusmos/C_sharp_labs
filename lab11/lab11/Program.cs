@@ -1,6 +1,5 @@
 ﻿using System;
 using ComplexOp;
-using EventCustomOp;
 using VectorOp;
 
 namespace lab11 {

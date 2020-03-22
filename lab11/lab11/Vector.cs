@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using ComplexOp;
 using System.Linq;
+using System.Collections;
 
 namespace VectorOp {
-  class Vector<T> {
+  class Vector<T> : IComparer {
     private T[] _coordsArr; //массив координат вектора
 
     public Vector() { }
@@ -17,6 +18,17 @@ namespace VectorOp {
       }
     }
 
+    public static int Compare(Vector<T> A, Vector<T> B) {
+      if (VectorAbs(A) > VectorAbs(B)) {
+        return 1;
+      } else if (VectorAbs(A) < VectorAbs(B)) {
+        return -1;
+      } else {
+        return 0;
+      }
+    }
+
+    //массив нулей
     public static T[] MakeZeroArr(Vector<T> A, Vector<T> B) {
       var zeroArr = new T[A._coordsArr.Length];
       if (A._coordsArr is ComplexNum[] || B._coordsArr is ComplexNum[]) {
@@ -150,6 +162,10 @@ namespace VectorOp {
         str.Append("  " + _coordsArr[i] + "  ");
       }
       return "vector(" + str + ")";
+    }
+
+    int IComparer.Compare(object x, object y) {
+      throw new NotImplementedException();
     }
   }
 }

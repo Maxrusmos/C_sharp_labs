@@ -4,7 +4,7 @@ using EventCustomOp;
 namespace ComplexOp {
   public class ComplexNum{
     public delegate void Handler(EventCustom obj);
-    public static event Handler DivisionZero;
+    public static event Handler DivisionZero; 
 
     private const double Eps = 1E-10;
     private double _real, _imaginary;
@@ -20,6 +20,9 @@ namespace ComplexOp {
     }
 
     public ComplexNum(int bottomBorder, int topBorder) {
+      if (bottomBorder > topBorder) {
+        (bottomBorder, topBorder) = (topBorder, bottomBorder);
+      }
       Random rnd = new Random();
       _real = bottomBorder + (rnd.NextDouble() * (topBorder - bottomBorder));
       _imaginary = bottomBorder + (rnd.NextDouble() * (topBorder - bottomBorder));
@@ -146,7 +149,7 @@ namespace ComplexOp {
 
     //вывод
     public override string ToString() {
-      return "Complex(" + this._real + "   " + this._imaginary + ")";  
+      return "Complex(" + _real + "   " + _imaginary + ")";  
     }
   }
 }

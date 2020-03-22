@@ -14,7 +14,7 @@ namespace lab11 {
       Console.WriteLine("Комплексные числа: ");
       var A = new ComplexNum(1.0, 2.0);
       var B = new ComplexNum(2.0, 4.45);
-      var C = new ComplexNum(0.1, 0.675);
+      var C = new ComplexNum(0.32, 0.9965);
       var D = new ComplexNum(9.1, 3.1);
       var E = new ComplexNum(5.0, 8.1);
       Console.WriteLine("A = " + A.ToString());
@@ -52,11 +52,16 @@ namespace lab11 {
 
       Console.ForegroundColor = ConsoleColor.Cyan;
       Console.WriteLine("Векторы из действительных чисел: ");
-      var doubleArr_1 = new double[3] { 3.3, -1.4, 9.56 };
-      var doubleArr_2 = new double[3] { 5.0, 8.2, -8.1 };
+      var doubleArr_1 = new double[3] { 3.1, -1, 89.87 };
+      var doubleArr_2 = new double[3] { -1.986, 1.75, 9 };
+      //var intArr_1 = new int[3] { 4, 1, 2 };
+      //var intArr_2 = new int[3] { 3, 1, 2 };
       var doubleVector_1 = new Vector<double>(doubleArr_1);
       var doubleVector_2 = new Vector<double>(doubleArr_2);
+      //var intVector_1 = new Vector<int>(intArr_1);
+      //var intVector_2 = new Vector<int>(intArr_2);
       var doubleVectorArr = new Vector<double>[2] { doubleVector_1, doubleVector_2 };
+      //Console.WriteLine(Vector<int>.Compare(intVector_1, intVector_2));
       Console.WriteLine("V1 = " + doubleVector_1.ToString());
       Console.WriteLine("V2 = " + doubleVector_2.ToString());
 

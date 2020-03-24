@@ -37,6 +37,5 @@ namespace Dichotomy {
     public static double EquationGet(double x) {
       return Math.Pow(x, 3) - 3 * x + 1;
     }
-
   }
 }

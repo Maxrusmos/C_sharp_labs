@@ -7,7 +7,10 @@ namespace lab11 {
     static void Main(string[] args) {
       //подписываем метод на событие
       ComplexNum division = new ComplexNum();
-      ComplexNum.DivisionZero += ComplexNum.ShowMessage;
+      ComplexNum.DivisionZero += (obj) => {
+        Console.WriteLine(obj);
+        Environment.Exit(1);
+      };
 
       Console.ForegroundColor = ConsoleColor.Magenta;
       Console.WriteLine("Комплексные числа: ");
@@ -99,7 +102,7 @@ namespace lab11 {
       Console.WriteLine("Операции с векторами: ");
       Console.WriteLine("CV1 + CV2 = " + (complexVector_1 + complexVector_2).ToString());
       Console.WriteLine("CV1 - CV2 = " + (complexVector_1 - complexVector_2).ToString());
-      Console.WriteLine("CV1 * 52 = " + (complexVector_1 * 52).ToString());
+      Console.WriteLine("CV1 * 52 = " + (complexVector_1 * new ComplexNum(52.0, 0.0)).ToString());
       Console.WriteLine("CV1 * CV2 = " + (complexVector_1 * complexVector_2).ToString());
       Console.WriteLine("|CV1| = " + Vector<ComplexNum>.VectorAbs(complexVector_1).ToString());
       Console.Write("Ортогонализация системы векторов (CV1, CV2): ");

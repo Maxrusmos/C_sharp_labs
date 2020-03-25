@@ -6,7 +6,7 @@ using System.Linq;
 using System.Collections;
 
 namespace VectorOp {
-  class Vector<T> : IComparer {
+  class Vector<T> : IComparable, IComparable<Vector<T>> where T: IComparable, new(){
     private T[] _coordsArr; //массив координат вектора
 
     public Vector() { }
@@ -18,35 +18,26 @@ namespace VectorOp {
       }
     }
 
-    public static int Compare(Vector<T> A, Vector<T> B) {
-      if (VectorAbs(A) > VectorAbs(B)) {
-        return 1;
-      } else if (VectorAbs(A) < VectorAbs(B)) {
-        return -1;
-      } else {
-        return 0;
-      }
+    public int CompareTo(Vector<T> B) {
+      return VectorAbs(this).CompareTo(VectorAbs(B));
     }
 
     //массив нулей
-    public static T[] MakeZeroArr(Vector<T> A, Vector<T> B) {
-      var zeroArr = new T[A._coordsArr.Length];
-      if (A._coordsArr is ComplexNum[] || B._coordsArr is ComplexNum[]) {
-        for (int i = 0; i < zeroArr.Length; i++) {
-          zeroArr[i] = (dynamic)new ComplexNum(0.0, 0.0);
-        }
-      } else {
-        for (int i = 0; i < zeroArr.Length; i++) {
-          zeroArr[i] = (dynamic)0;
-        }
+    private static T[] MakeZeroArr(Vector<T> A) {
+      return Enumerable.Repeat(new T(), A._coordsArr.Length).ToArray();
+    }
+
+    private static void ThrowIfLengthsNotEqual(Vector<T> A, Vector<T> B) {
+      if (A._coordsArr.Length != B._coordsArr.Length) {
+        throw new Exception("Длины векторов не совпадают");
       }
-      return zeroArr;
     }
 
     //сумма
     public static Vector<T> VectorSum(Vector<T> A, Vector<T> B) {
-      var zeroArr = MakeZeroArr(A, B);
-      var resultVector = new Vector<T>(zeroArr);
+      ThrowIfLengthsNotEqual(A, B);
+      var zeroVector = MakeZeroArr(A);
+      var resultVector = new Vector<T>(zeroVector);
       for (int i = 0; i < A._coordsArr.Length; i++) {
         resultVector._coordsArr[i] = (dynamic)A._coordsArr[i] + (dynamic)B._coordsArr[i];
       }
@@ -59,7 +50,8 @@ namespace VectorOp {
 
     //разность
     public static Vector<T> VectorDifference(Vector<T> A, Vector<T> B) {
-      var zeroArr = MakeZeroArr(A, B);
+      ThrowIfLengthsNotEqual(A, B);
+      var zeroArr = MakeZeroArr(A);
       var resultVector = new Vector<T>(zeroArr);
       for (int i = 0; i < A._coordsArr.Length; i++) {
         resultVector._coordsArr[i] = (dynamic)A._coordsArr[i] - (dynamic)B._coordsArr[i];
@@ -72,8 +64,8 @@ namespace VectorOp {
     }
 
     //произведение вектора и числа
-    public static Vector<T> VectorMultiplicationNum(Vector<T> A, dynamic num) {
-      var zeroArr = MakeZeroArr(A, A);
+    public static Vector<T> VectorMultiplicationNum(Vector<T> A, T num) {
+      var zeroArr = MakeZeroArr(A);
       var resultVector = new Vector<T>(zeroArr);
       for (int i = 0; i < A._coordsArr.Length; i++) {
         resultVector._coordsArr[i] = (dynamic)A._coordsArr[i] * num; 
@@ -81,43 +73,33 @@ namespace VectorOp {
       return resultVector;
     }
 
-    public static Vector<T> operator *(Vector<T> A, dynamic num) {
+    public static Vector<T> operator *(Vector<T> A, T num) {
       return VectorMultiplicationNum(A, num);
     }
 
     //модуль
-    public static dynamic VectorAbs(Vector<T> A) {
-      dynamic result;
-      if (A._coordsArr is ComplexNum[]) {
-        result = new ComplexNum(0.0, 0.0);
-      } else {
-        result = 0.0;
-      }
+    public static T VectorAbs(Vector<T> A) {
+      var result = new T();   
       for (int i = 0; i < A._coordsArr.Length; i++) {
         result += (dynamic)A._coordsArr[i] * A._coordsArr[i]; 
       }
       if (result is ComplexNum) {
-        return ComplexNum.ComplexSqrtN(result, 2)[0];
+        return ComplexNum.ComplexSqrtN((dynamic)result, 2)[0];
       } else {
-        return Math.Sqrt(result);
+        return Math.Sqrt((dynamic)result);
       }     
     }
 
     //скалярное произведение
-    public static dynamic VectorScalarProduct(Vector<T> A, Vector<T> B) {
-      dynamic result;
-      if (A._coordsArr is ComplexNum[]) {
-        result = new ComplexNum(0.0, 0.0);
-      } else {
-        result = 0.0;
-      }
+    public static T VectorScalarProduct(Vector<T> A, Vector<T> B) {
+      var result = new T();
       for (int i = 0; i < A._coordsArr.Length; i++) {
         result += (dynamic)A._coordsArr[i] * (dynamic)B._coordsArr[i];
       }
       return result;
     }
 
-    public static dynamic operator *(Vector<T> A, Vector<T> B) {
+    public static T operator *(Vector<T> A, Vector<T> B) {
       return VectorScalarProduct(A, B);
     }
 
@@ -126,11 +108,11 @@ namespace VectorOp {
       var bj = new Vector<T>[A.Length];
       bj[0] = A[0];
       for (int i = 1; i < A.Length; i++) {
-        var zeroArr = MakeZeroArr(A[i], A[i]);
+        var zeroArr = MakeZeroArr(A[i]);
         var tmpVector = new Vector<T>(zeroArr);
         var sumVector = new Vector<T>(zeroArr);
         for (int j = 0; j < i; j++) {
-          dynamic k = (A[i] * bj[j]) / (bj[j] * bj[j]);
+          T k = (dynamic)(A[i] * bj[j]) / (bj[j] * bj[j]);
           sumVector -= VectorMultiplicationNum(bj[j], k);
         }
         bj[i] = A[i] + sumVector;
@@ -145,11 +127,10 @@ namespace VectorOp {
       for (int i = 0; i < A._coordsArr.Length; i++) {
         list.Add(A._coordsArr[i]);
       }
-      var array = list.Select(n => n).ToArray();
-      return array;
+      return list.ToArray();
     }
 
-    //в вектора в массив
+    //из вектора в массив
     public static implicit operator Vector<T>(T[] Arr) {
       var vector = new Vector<T>(Arr);
       return vector;
@@ -157,15 +138,18 @@ namespace VectorOp {
 
     //вывод
     public override string ToString() {
-      StringBuilder str = new StringBuilder();
+      StringBuilder str = new StringBuilder("vector(");
       for (int i = 0; i < _coordsArr.Length; i++) {
-        str.Append("  " + _coordsArr[i] + "  ");
+        str.Append("  ").Append(_coordsArr[i]).Append("  ");
       }
-      return "vector(" + str + ")";
+      return  str + ")";
     }
 
-    int IComparer.Compare(object x, object y) {
-      throw new NotImplementedException();
+    int IComparable.CompareTo(object obj) {
+      if (!(obj is Vector<T>)) {
+        throw new ArgumentException("Это не вектор", nameof(obj));
+      }
+      return CompareTo((Vector<T>)obj);
     }
   }
 }

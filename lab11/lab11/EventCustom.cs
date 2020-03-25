@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using ComplexOp;
 
 namespace EventCustomOp {
-  public class EventCustom : EventArgs {
-    public string _message;
+  public sealed class EventCustom : EventArgs {
+    private ComplexNum _numLeft;
+    private ComplexNum _numRight;
 
-    public EventCustom() {
-      this._message = "Деление на ноль";
+    public EventCustom(ComplexNum numerator, ComplexNum denumerator) {
+      _numLeft = numerator;
+      _numRight = denumerator;
     }
 
     public override string ToString() {
-      return this._message; 
+      return $"Деление на ноль {_numLeft} / {_numRight}";
     }
   }
 }

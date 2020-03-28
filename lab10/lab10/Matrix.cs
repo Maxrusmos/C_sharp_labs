@@ -4,8 +4,30 @@ using System.Collections;
 using System.Text;
 
 namespace MatrixOp {
-  public sealed class Matrix : IEnumerable, ICloneable {
+  public sealed class Matrix : IEnumerable, ICloneable, IComparable, IComparable<Matrix> {
     private double[,] mass;
+
+    public int CompareTo(Matrix A) {
+      var ca1 = DeterminantMatrix(this);
+      var ca2 = DeterminantMatrix(A);
+      if (ca1 > ca2) {
+        return 1;
+      } else if (ca1 < ca2) {
+        return -1;
+      } else {
+        return 0;
+      }
+    }
+
+    public int CompareTo(object obj) {
+      if (!(obj is Matrix)) {
+        throw new ArgumentException("Не могу сравнить значения", nameof(obj));
+      }
+      if (obj is null) {
+        throw new ArgumentException("NULL", nameof(obj));
+      }
+      return CompareTo((Matrix)obj);
+    }
 
     public IEnumerator GetEnumerator() {
       return mass.GetEnumerator();
@@ -29,18 +51,10 @@ namespace MatrixOp {
       mass.GetLength(0);
 
     public Matrix(int n) {
-      if (n < 0) {
-        Console.WriteLine("Размерность не может быть отрицательной" + Environment.NewLine);
-        Environment.Exit(1);
-      }
       mass = new double[n, n];
     }
 
     public Matrix(int n, int lowerBorder, int upperBorder) {
-      if (n < 0) {
-        Console.WriteLine("Размерность не может быть отрицытельной" + Environment.NewLine);
-        Environment.Exit(2);
-      }
       Random r = new Random();
       mass = new double[n, n];
       for (int i = 0; i < n; i++) {
@@ -51,10 +65,6 @@ namespace MatrixOp {
     }
 
     public Matrix(int n, params int[] elems) {
-      if (n < 0) {
-        Console.WriteLine("Размерность не может быть отрицательной" + Environment.NewLine);
-        Environment.Exit(1);
-      }
       mass = new double[n, n];
       for (int i = 0; i < elems.Length; i++) {
         mass[i / n, i % n] = elems[i];
@@ -108,10 +118,14 @@ namespace MatrixOp {
       return resMass;
     }
 
-    // Умножение матрицы А на матрицу Б
+    public static Matrix operator *(Matrix a, double num) {
+      return CompositionWhithNum(a, num);
+    }
+
+    // Умножение матрицы А на матрицу B
     public static Matrix CompositionMatrix(Matrix a, Matrix b) {
       if (a.N != b.N) {
-        throw new CustomException($"Размерности матриц не совпадают{Environment.NewLine}");
+        throw new CustomException($"Эти матрицы нельзя перемножить{Environment.NewLine}");
       }
       Matrix resMass = new Matrix(a.N); 
       for (int i = 0; i < a.N; i++)
@@ -122,9 +136,26 @@ namespace MatrixOp {
       return resMass;
     }
 
+    public static Matrix operator *(Matrix a, Matrix b) {
+      return CompositionMatrix(a, b);
+    }
+
+    //возведение матрицы в степень
+    public static Matrix MatrixPow(Matrix A, int pow) {
+      var resultMatrix = A;
+      for (int i = 0; i < pow - 1; i++) {
+        resultMatrix *= A;
+      }
+      return resultMatrix;
+    }
+
     //деление матрицы A на матрицу B
     public static Matrix DivisionMatrix(Matrix a, Matrix b) {
       return Matrix.CompositionMatrix(a, Matrix.ReverseMatrix(b));
+    }
+
+    public static Matrix operator /(Matrix a, Matrix b) {
+      return DivisionMatrix(a, b);
     }
 
     // Сумма матриц
@@ -139,6 +170,28 @@ namespace MatrixOp {
         }
       }
       return resMass;
+    }
+
+    public static Matrix operator +(Matrix a, Matrix b) {
+      return SumMatrix(a, b);
+    }
+
+    // Сумма матриц
+    public static Matrix DifferenceMatrix(Matrix a, Matrix b) {
+      if (a.N != b.N) {
+        throw new CustomException("Размерности матриц не совпадают" + Environment.NewLine);
+      }
+      Matrix resMass = new Matrix(a.N);
+      for (int i = 0; i < a.N; i++) {
+        for (int j = 0; j < b.N; j++) {
+          resMass[i, j] = a[i, j] - b[i, j];
+        }
+      }
+      return resMass;
+    }
+
+    public static Matrix operator -(Matrix a, Matrix b) {
+      return DifferenceMatrix(a, b);
     }
 
     //транспонирование
@@ -186,7 +239,6 @@ namespace MatrixOp {
         if (i != k) {
           det = -det;
         }
-
         det *= a[i][i];
         for (int j = i + 1; j < detMatrix.N; ++j) {
           a[i][j] /= a[i][i];
@@ -215,8 +267,8 @@ namespace MatrixOp {
           AlgebraicAdditionsMatrix[i, j] = Math.Pow(-1, i + j) * DeterminantMatrix(DeleteRowCol(i, j, a));
         }
       }
-      AlgebraicAdditionsMatrix = Matrix.TranspositionMatrix(AlgebraicAdditionsMatrix);
-      resMass = Matrix.CompositionWhithNum(AlgebraicAdditionsMatrix, 1 / Matrix.DeterminantMatrix(a));
+      AlgebraicAdditionsMatrix = TranspositionMatrix(AlgebraicAdditionsMatrix);
+      resMass = CompositionWhithNum(AlgebraicAdditionsMatrix, 1 / DeterminantMatrix(a));
       return resMass;
     }
 

@@ -1,60 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using SearchFilesOp;
-using System.IO.Compression;
+using SearchFileOp;
 using FileCompressOp;
-using System.Diagnostics;
+using OpenInNotepadOp;
 
 namespace lab13 {
   class Program {
     static void Main(string[] args) {
-      string PatchProfile = Environment.GetEnvironmentVariable("USERPROFILE");
-      Console.Write("Введите название файла, который хотите найти: ");
-      var myFileName = Console.ReadLine(); 
-      string[] dirsArr = SearchFiles.SearchDirectory(PatchProfile);
-      string ListPatch = ""; 
-      var fileCounter = 0;
-      List<string> strList = new List<string>(); 
-      foreach (string folderPatch in dirsArr) {
-        try {
-          string[] filesArr = SearchFiles.SearchFileInDir(folderPatch, myFileName);
-          foreach (string currentFile in filesArr) {
-            fileCounter++;
-            ListPatch += fileCounter + ") " + currentFile + "\n";
-            strList.Add(currentFile);
-          }
-        }
-        catch {
-          continue;
-        }
-      }
+      Console.Write("Введите имя файла, который хотите найти: ");
+      var myFileName = Console.ReadLine();
+      SearchFile.ApplyAllFiles(@"C:\", SearchFile.AddList, myFileName);
 
-      if (ListPatch.Length == 0) {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("Файлы с таким именем не найдены");
-        Environment.Exit(1);
-      }
-
-      Console.WriteLine("Найденные файлы");
-      Console.WriteLine(ListPatch);
-
-      Console.Write("Выберите файл из списка файл, который хотите открыть (укажите номер в списке): ");
+      Console.Write("Выберите файл из списка, который хотите открыть (укажите номер в списке): ");
       if (!int.TryParse(Console.ReadLine(), out int numberInList)) {
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine("Вы ввели не число");
         System.Environment.Exit(1);
       }
 
-      if (numberInList - 1 > strList.Count || numberInList < 1) {
+      if (numberInList - 1 > SearchFile._fileList.Count || numberInList < 1) {
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine("Такого номера в списке не существует");
         System.Environment.Exit(2);
       }
 
-      FileCompress.Compress(strList[numberInList - 1], strList[numberInList - 1].Split('.')[1] + "Compress.txt");
+      //try
+      OpenInNotepad.openFile(SearchFile._fileList, numberInList);
 
-      Process.Start("C:/Windows/System32/notepad.exe", strList[numberInList - 1]);
-    }
+      try {
+        FileCompress.Compress(SearchFile._fileList[numberInList - 1], SearchFile._fileList[numberInList - 1].Split('.')[1] + "Compress.txt");
+      }
+      catch (ArgumentException ex) {
+        Console.WriteLine(ex.Message);
+      }
+      Console.WriteLine("успех");
+      Console.ReadKey();
+    }  
   }
 }

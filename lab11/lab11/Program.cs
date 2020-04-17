@@ -16,9 +16,9 @@ namespace lab11 {
       Console.WriteLine("Комплексные числа: ");
       var A = new ComplexNum(1.0, 2.0);
       var B = new ComplexNum(2.0, 4.45);
-      var C = new ComplexNum(0.32, 0.9965);
-      var D = new ComplexNum(9.1, 3.1);
-      var E = new ComplexNum(5.0, 8.1);
+      var C = new ComplexNum(10.11, 0.0);
+      var D = new ComplexNum(1.12345678912345678, 1.0);
+      var E = new ComplexNum(10.23, 11.3476);
       Console.WriteLine("A = " + A.ToString());
       Console.WriteLine("B = " + B.ToString());
       Console.WriteLine("C = " + C.ToString());
@@ -54,18 +54,21 @@ namespace lab11 {
 
       Console.ForegroundColor = ConsoleColor.Cyan;
       Console.WriteLine("Векторы из действительных чисел: ");
-      var doubleArr_1 = new double[3] { 3.1, -1, 89.87 };
-      var doubleArr_2 = new double[3] { -1.986, 1.75, 9 };
+      var doubleArr_1 = new double[4] { 3.0, 2.0, 1.0, 1.0 };
+      var doubleArr_2 = new double[4] { 3.0, 3.0, 1.0, 2.0 };
+      var doubleArr_3 = new double[4] { 1.0, 2.0, 1.0, 2.0 };
       //var intArr_1 = new int[3] { 4, 1, 2 };
       //var intArr_2 = new int[3] { 3, 1, 2 };
       var doubleVector_1 = new Vector<double>(doubleArr_1);
       var doubleVector_2 = new Vector<double>(doubleArr_2);
+      var doubleVector_3 = new Vector<double>(doubleArr_3);
       //var intVector_1 = new Vector<int>(intArr_1);
       //var intVector_2 = new Vector<int>(intArr_2);
-      var doubleVectorArr = new Vector<double>[2] { doubleVector_1, doubleVector_2 };
+      var doubleVectorArr = new Vector<double>[3] { doubleVector_1, doubleVector_2, doubleVector_3 };
       //Console.WriteLine(Vector<int>.Compare(intVector_1, intVector_2));
       Console.WriteLine("V1 = " + doubleVector_1.ToString());
       Console.WriteLine("V2 = " + doubleVector_2.ToString());
+      Console.WriteLine("V2 = " + doubleVector_3.ToString());
 
       Console.WriteLine(Environment.NewLine);
       Console.ForegroundColor = ConsoleColor.Yellow;
@@ -75,7 +78,7 @@ namespace lab11 {
       Console.WriteLine("V1 * 52 = " + (doubleVector_1 * 52).ToString());
       Console.WriteLine("V1 * V2 = " + (doubleVector_1 * doubleVector_2).ToString());
       Console.WriteLine("|V1| = " + Vector<double>.VectorAbs(doubleVector_1).ToString());
-      Console.Write("Ортогонализация системы векторов (V1, V2): ");
+      Console.Write("Ортогонализация системы векторов (V1, V2, V3): ");
       for (int i = 0; i < Vector<double>.VectorOrthogonalization(doubleVectorArr).Length; i++) {
         if (i == 0) {
           Console.WriteLine(Vector<double>.VectorOrthogonalization(doubleVectorArr)[i]);

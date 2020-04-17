@@ -8,9 +8,10 @@ namespace OpenInNotepadOp {
       try {
         Process.Start("C:/Windows/System32/notepad.exe", list[count - 1]);
       }
-      //исправить (шайтан)
-      catch {
-        throw new ArgumentException("Не удалось открыть файл", nameof(list));
+      catch (AggregateException ex){
+        foreach (var e in ex.InnerExceptions) {
+          throw e;
+        }
       }
     }
   }

@@ -6,7 +6,6 @@ namespace FileCompressOp {
   sealed class FileCompress {
     public static void Compress(string sourceFile, string compressedFile) {
       try {
-        //почитать
         using (FileStream sourceStream = new FileStream(sourceFile, FileMode.OpenOrCreate)) {
           using (FileStream targetStream = File.Create(compressedFile)) {
             using (GZipStream compressionStream = new GZipStream(targetStream, CompressionMode.Compress)) {
@@ -16,9 +15,11 @@ namespace FileCompressOp {
             }
           }
         }
-      } catch {
-        //подправить
-        throw new AggregateException("Не удалось сжать файл");
+      }
+      catch (AggregateException ex) {
+        foreach (var e in ex.InnerExceptions) {
+          throw e;
+        }
       }
     }
   }

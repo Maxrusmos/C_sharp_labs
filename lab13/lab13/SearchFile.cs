@@ -5,12 +5,16 @@ using System.Linq;
 
 namespace SearchFileOp {
   public static class SearchFile {
-   public static List<string> _fileList = new List<string>(); //private
+    private static List<string> _fileList = new List<string>();
+    public static List<string> getList {
+      get => _fileList;
+    }
 
-    //lazy value factory
     public static void ApplyAllFiles(string folder, Action<string> AddList, string fileName) {
       foreach (var file in Directory.GetFiles(folder)) {
-        //пустой файл
+        if (file.Length == 0) {
+          throw new ArgumentException("Что-то пошло не так", nameof(file.Length));
+        }
         if (file.Split(@"\").Last() == fileName) {
           AddList(file);
         }
@@ -19,14 +23,10 @@ namespace SearchFileOp {
         try {
           ApplyAllFiles(subdir, AddList, fileName);
         }
-        //io exeption -> agregate
-        catch {
-
-        }
+        catch { }
       }
     }
 
-    //В эту функцию попадает полное имя файла и его место расположения.
     public static void AddList(string path) {
       _fileList.Add(path);
       Console.WriteLine($"{_fileList.Count}) {path}");

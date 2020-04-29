@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
 
 namespace WorkWithFileOp {
   public static class WorkWithFile {
@@ -11,7 +12,7 @@ namespace WorkWithFileOp {
       OpenFileDialog openFileDialog = new OpenFileDialog();
       if (openFileDialog.ShowDialog() == true) {
         var extension = Path.GetExtension(openFileDialog.FileName);
-        if (!(extension != ".txt")) {
+        if (!(extension != ".txt")) { 
           using (StreamReader sr = new StreamReader(openFileDialog.FileName)) {
             while (!sr.EndOfStream) {
               string strFromFile = sr.ReadLine().Replace(" ", "");
@@ -39,6 +40,20 @@ namespace WorkWithFileOp {
         }
       }
       return boolCorrect;
+    }
+
+    //запись в файл
+    public static void WriteToFile(TextBlock resultText) {
+      SaveFileDialog dlg = new SaveFileDialog();
+      dlg.FileName = "result";
+      dlg.DefaultExt = ".txt"; 
+      dlg.Filter = "Text documents (.txt)|*.txt";
+
+      var result = dlg.ShowDialog();
+
+      if (result == true) {
+        File.WriteAllText(dlg.FileName, resultText.Text);
+      }
     }
   }
 }

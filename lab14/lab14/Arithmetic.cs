@@ -3,20 +3,19 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TokenOp;
-using System.Diagnostics;
+using System.Text;
 
 namespace ArithmeticOp {
   static class Arithmetic {
-    public static List<Token> Calculate(string expression) {
-      MatchCollection collection = Regex.Matches(expression, @"[()A-Za-z!*+>~#^|*]");
+    public static List<Token> ReversePolishNotation(string expression) {
+      var collection = Regex.Matches(expression, @"[()A-Za-z!*+>~#^|*]");
+      var variables = new Regex(@"[A-Za-z]");
+      var operations = new Regex(@"[!*+>~#|^]"); 
+      var brackets = new Regex(@"\(|\)"); 
+      var priority = new string[] { "!", "*", "+", ">", "~", "|", "#", "^"};
+      var stack = new Stack<string>();
+      var list = new List<Token>();
 
-      Regex variables = new Regex(@"[A-Za-z]"); //переменные
-      Regex operations = new Regex(@"[!*+>~#|^]"); //операнды
-      Regex brackets = new Regex(@"\(|\)"); //скобки
-      string[] priority = { "!", "*", "+", ">", "~", "|", "#", "^"};
-
-      Stack<string> stack = new Stack<string>();
-      List<Token> list = new List<Token>();
       foreach (Match match in collection) {
         Match temp = variables.Match(match.Value);
         if (temp.Success) {
@@ -94,35 +93,129 @@ namespace ArithmeticOp {
       return result.Pop();
     }
 
+    //получаем словарь переменных
     public static Dictionary<string, bool> GetVariables(List<Token> rpn) {
-      string[] variables = rpn.Where(x => x.Type == Token.TokenType.Variable).Distinct().Select(x => x.Value).Cast<string>().ToArray();
-      Dictionary<string, bool> dictionary = new Dictionary<string, bool>();
+      var variables = rpn.Where(x => x.Type == Token.TokenType.Variable).Distinct().Select(x => x.Value).Cast<string>().ToArray();
+      var dictionary = new Dictionary<string, bool>();
       foreach (string variable in variables) {
         dictionary[variable] = false;
       }
       return dictionary;
     }
 
+    //получаем переменные
     public static void GetVariables(int value, Dictionary<string, bool> variables) {
       string binary = Convert.ToString(value, 2);
-      for (int i = 1; i < binary.Length; i++)
+      for (int i = 1; i < binary.Length; i++) {
         variables[variables.ElementAt(i - 1).Key] = binary[i] == '0' ? false : true;
+      }
     }
 
-    public static string[,] PrintTable(List<Token> rpn, Dictionary<string, bool> variables) {
+    //таблица истинности
+    public static string[,] TruthTable(List<Token> rpn, Dictionary<string, bool> variables) {
       int count = (int)Math.Pow(2, variables.Count);
-      var valueArray = new string[(int)Math.Pow(2, count), count];
+      var valueList = new List<string>();
       for (int i = 0; i < count; i++) {
         GetVariables(i + count, variables);
-        var j = 0;
         foreach (var value in variables) {
-          Debug.Write(value.Value ? " 1 " : " 0 ");
-          valueArray[i, j] = value.Value ? " 1 " : " 0 ";
-          j++;
+          valueList.Add(value.Value ? " 1 " : " 0 ");
         }
-        Debug.WriteLine(Calculate(rpn, variables) ? " 1 " : " 0 ");
+        valueList.Add(Calculate(rpn, variables) ? " 1 " : " 0 ");
       }
+      var valueArray = ToDoubleArray(valueList, variables);
       return valueArray;
+    }
+
+    //в двумерный массив
+    private static string[,] ToDoubleArray(List<string> valueList, Dictionary<string, bool> variables) {
+      var arr = new string[(int)Math.Pow(2, variables.Count), variables.Count + 1];
+      for (int i = 0, r = 0; r < (int)Math.Pow(2, variables.Count); ++r) {
+        for (int c = 0; c < variables.Count + 1; ++i, ++c) {
+          arr[r, c] = valueList.ToArray()[i];
+        }
+      }
+      return arr;
+    }
+
+    //в двумерный массив с известным числом строк
+    private static string[,] ToDoubleArray(List<string> valueList, Dictionary<string, bool> variables, int rowCount) {
+      var arr = new string[rowCount, variables.Count];
+      for (int i = 0, r = 0; r < rowCount; ++r) {
+        for (int c = 0; c < variables.Count; ++i, ++c) {
+          arr[r, c] = valueList.ToArray()[i];
+        }
+      }
+      return arr;
+    }
+
+    //СДНФ
+    public static string Sdnf(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {
+      var rowCounter = 0;
+      var tmpList = new List<string>();    
+      for (int i = 0; i < (int)Math.Pow(2, variables.Count); i++) {
+        if (truthTable[i, variables.Count] == " 1 ") {
+          for (int j = 0; j < variables.Count; j++) {
+            tmpList.Add(truthTable[i, j]);
+          }
+          rowCounter++;
+        }
+      }
+      var tmpArr = ToDoubleArray(tmpList, variables, rowCounter);
+      var strBuild = new StringBuilder();
+      var vars = rpn.Where(x => x.Type == Token.TokenType.Variable).Distinct().Select(x => x.Value).Cast<string>().ToArray();
+      for (int i = 0; i < rowCounter; i++) {
+        strBuild.Append("(");
+        for (int j = 0; j < variables.Count; j++) {
+          if (tmpArr[i, j] == " 0 ") {
+            strBuild.Append($"!{vars[j]}");
+          } else {
+            strBuild.Append($"{vars[j]}");
+          }
+          if (j != variables.Count - 1) {
+            strBuild.Append("*");
+          }
+        }
+        strBuild.Append(")");
+        if (i != rowCounter - 1) {
+          strBuild.Append("+");
+        }
+      }
+      return strBuild.ToString();
+    }
+
+    //СКНФ
+    public static string Sknf(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {
+      var rowCounter = 0;
+      var tmpList = new List<string>();
+      for (int i = 0; i < (int)Math.Pow(2, variables.Count); i++) {
+        if (truthTable[i, variables.Count] == " 0 ") {
+          for (int j = 0; j < variables.Count; j++) {
+            tmpList.Add(truthTable[i, j]);
+          }
+          rowCounter++;
+        }
+      }
+      var tmpArr = ToDoubleArray(tmpList, variables, rowCounter);
+      var strBuild = new StringBuilder();
+      var vars = rpn.Where(x => x.Type == Token.TokenType.Variable).Distinct().Select(x => x.Value).Cast<string>().ToArray();
+      for (int i = 0; i < rowCounter; i++) {
+        strBuild.Append("(");
+        for (int j = 0; j < variables.Count; j++) {
+          if (tmpArr[i, j] == " 1 ") {
+            strBuild.Append($"!{vars[j]}");
+          } else {
+            strBuild.Append($"{vars[j]}");
+          }
+          if (j != variables.Count - 1) {
+            strBuild.Append("+");
+          }
+        }
+        strBuild.Append(")");
+        if (i != rowCounter - 1) {
+          strBuild.Append("*");
+        }
+      }
+      return strBuild.ToString();
     }
   }
 }

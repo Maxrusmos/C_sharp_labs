@@ -1,0 +1,15 @@
+﻿<Window x:Class="lab14.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="About" Height="291.208" Width="800"
+        WindowStartupLocation="CenterScreen">
+  <Grid>
+    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" 
+               Text="The program Builder SKNF and SDNF is designed to find perfect conjunctive and perfect disjunctive normal forms of Boolean formulas. Formulas can be set in a file. The text window can be edited. The program supports the following logical operations: !-negation, *-conjunction, +-disjunction, >-implication, ^-exclusive or, ~-equivalence, #-Pierce arrow, |-Schaeffer stroke. Example of a Boolean formula: ((A+B)*C)~D." 
+               FontSize="25"              
+               VerticalAlignment="Top" Height="240" Width="764" Margin="10,10,0,0"/>
+  </Grid>
+</Window>

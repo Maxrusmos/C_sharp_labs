@@ -20,16 +20,15 @@ namespace WorkWithFileOp {
             }
           }
           if (!CorrectFile(strList)) {
-            throw new ArgumentException("Некорректные данные в файле");
+            throw new ArgumentException("Invalid data in the file");
           }
         } else {
-          throw new ArgumentException("Файл должен быть с расширением txt");
+          throw new ArgumentException("The file must have the txt extension");
         }
       }
       return strList;
     }
 
-    //проверка корректности данных в файле
     private static bool CorrectFile(List<string> fileList) {
       var boolCorrect = true;
       Regex r = new Regex(@"[^A-za-z0-1+!*~<>|)#(]+$");
@@ -42,15 +41,12 @@ namespace WorkWithFileOp {
       return boolCorrect;
     }
 
-    //запись в файл
     public static void WriteToFile(TextBlock resultText) {
       SaveFileDialog dlg = new SaveFileDialog();
       dlg.FileName = "result";
       dlg.DefaultExt = ".txt"; 
       dlg.Filter = "Text documents (.txt)|*.txt";
-
       var result = dlg.ShowDialog();
-
       if (result == true) {
         File.WriteAllText(dlg.FileName, resultText.Text);
       }

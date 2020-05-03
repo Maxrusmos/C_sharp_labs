@@ -22,7 +22,6 @@ namespace ArithmeticOp {
           list.Add(new Token(temp.Value, Token.TokenType.Variable));
           continue;
         }
-
         temp = brackets.Match(match.Value);
         if (temp.Success) {
           if (temp.Value == "(") {
@@ -36,7 +35,6 @@ namespace ArithmeticOp {
           }
           continue;
         }
-
         temp = operations.Match(match.Value);
         if (temp.Success) {
           if (stack.Count != 0)
@@ -93,7 +91,6 @@ namespace ArithmeticOp {
       return result.Pop();
     }
 
-    //получаем словарь переменных
     public static Dictionary<string, bool> GetVariables(List<Token> rpn) {
       var variables = rpn.Where(x => x.Type == Token.TokenType.Variable).Distinct().Select(x => x.Value).Cast<string>().ToArray();
       var dictionary = new Dictionary<string, bool>();
@@ -103,7 +100,6 @@ namespace ArithmeticOp {
       return dictionary;
     }
 
-    //получаем переменные
     public static void GetVariables(int value, Dictionary<string, bool> variables) {
       string binary = Convert.ToString(value, 2);
       for (int i = 1; i < binary.Length; i++) {
@@ -111,7 +107,6 @@ namespace ArithmeticOp {
       }
     }
 
-    //таблица истинности
     public static string[,] TruthTable(List<Token> rpn, Dictionary<string, bool> variables) {
       int count = (int)Math.Pow(2, variables.Count);
       var valueList = new List<string>();
@@ -126,7 +121,6 @@ namespace ArithmeticOp {
       return valueArray;
     }
 
-    //в двумерный массив
     private static string[,] ToDoubleArray(List<string> valueList, Dictionary<string, bool> variables) {
       var arr = new string[(int)Math.Pow(2, variables.Count), variables.Count + 1];
       for (int i = 0, r = 0; r < (int)Math.Pow(2, variables.Count); ++r) {
@@ -137,7 +131,6 @@ namespace ArithmeticOp {
       return arr;
     }
 
-    //в двумерный массив с известным числом строк
     private static string[,] ToDoubleArray(List<string> valueList, Dictionary<string, bool> variables, int rowCount) {
       var arr = new string[rowCount, variables.Count];
       for (int i = 0, r = 0; r < rowCount; ++r) {
@@ -148,7 +141,6 @@ namespace ArithmeticOp {
       return arr;
     }
 
-    //СДНФ
     public static string Sdnf(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {
       var rowCounter = 0;
       var tmpList = new List<string>();    
@@ -183,7 +175,6 @@ namespace ArithmeticOp {
       return strBuild.ToString();
     }
 
-    //СКНФ
     public static string Sknf(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {
       var rowCounter = 0;
       var tmpList = new List<string>();

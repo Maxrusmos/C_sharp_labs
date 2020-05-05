@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:lab14"
         mc:Ignorable="d"
         Title="PCNF and PDNF builder" WindowState="Maximized">
   <Grid>
@@ -14,11 +13,12 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="41*"/>
       <RowDefinition Height="463*"/>
+      <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
     <Menu Height="30" VerticalAlignment="Top" Grid.ColumnSpan="2">
       <MenuItem Header="File" FontSize="20">
-        <MenuItem Header="Open File" Click="ButtonOpenFile_Click"></MenuItem>
+        <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"></MenuItem>
         <MenuItem Header="Save as" Click="ButtonWriteToFile_Click"></MenuItem>
         <Separator></Separator>
         <MenuItem Header="Exit" Click="ButtonExit_Click"></MenuItem>
@@ -29,16 +29,51 @@
     <Label FontSize="25" Name="TextFromFileLabel" Content="Boolean formulas:" 
            HorizontalAlignment="Left" VerticalAlignment="Bottom" 
            Margin="10,-5,0,5" Width="225" Grid.Row="0" Height="41"/>
-    <Border BorderThickness="1" BorderBrush="Black" Margin="10,0,10,23" Grid.Row="1" Grid.Column="0">
+    <Border BorderThickness="1" BorderBrush="Black" Margin="10,0,10,96" Grid.Row="1" Grid.Column="0">
       <ScrollViewer Margin="9">
-        <TextBlock x:Name="TextFromFile" TextWrapping="Wrap"
-                 HorizontalAlignment="Stretch"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 ScrollViewer.CanContentScroll="True" FontSize="25">
-        </TextBlock>
+        <ItemsControl ItemsSource="{Binding OriginalFormulasList}" FontSize="20">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="Vertical"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Grid Margin="0,0,0,10">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="10*" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="4*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0"
+                           Grid.Column="0"
+                           Text="{Binding}" />
+                <Button Grid.Row="0"
+                        Grid.Column="2"
+                        Content="Find PCNF and PDNF"
+                        Margin="0, 0, 10, 0"/>
+                <Separator Grid.Row="1"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="3"
+                           Margin="0,0,10,0"/>
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
       </ScrollViewer>
     </Border>
+    <Button Content="Find PCNF and PDNF for all formulas" 
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Bottom" 
+            Grid.Row="1"
+            Grid.Column="0"
+            Height="68" 
+            Margin="10,0,10,23"
+            FontSize="22"/>
 
     <Label FontSize="25" Name="ResultLabel" Content="PCNF/PDNF:" 
            HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,-5,0,7" 

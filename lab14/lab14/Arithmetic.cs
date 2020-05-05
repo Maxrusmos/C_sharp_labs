@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using TokenOp;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ArithmeticOp {
+namespace MVVM {
   static class Arithmetic {
     public static List<Token> ReversePolishNotation(string expression) {
       var collection = Regex.Matches(expression, @"[()A-Za-z!*+>~#^|*]");
@@ -175,6 +175,10 @@ namespace ArithmeticOp {
       return strBuild.ToString();
     }
 
+    public static async Task<string> SdnfAsync(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {
+      return await Task.Run(() => Sdnf(truthTable, variables, rpn)); 
+    }
+
     public static string Sknf(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {
       var rowCounter = 0;
       var tmpList = new List<string>();
@@ -207,6 +211,10 @@ namespace ArithmeticOp {
         }
       }
       return strBuild.ToString();
+    }
+
+    public static async Task<string> SknfAsync(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {
+      return await Task.Run(() => Sknf(truthTable, variables, rpn));
     }
   }
 }

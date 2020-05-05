@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using WorkWithFileOp;
-using ArithmeticOp;
-using TokenOp;
+using MVVM;
 
 namespace lab14 {
   public partial class MainWindow : Window {
     public MainWindow() {
       InitializeComponent();
+      DataContext = new ApplicationViewModel();
     }
 
-    private void ButtonOpenFile_Click(object sender, RoutedEventArgs e) {
+    private async void ButtonOpenFile_Click(object sender, RoutedEventArgs e) {
       ResultText.Text = "";
-      TextFromFile.Text = "";
       var logicalExpressionList = new List<string>();
       try {
-        logicalExpressionList = WorkWithFile.OpenFile();
+        //logicalExpressionList = WorkWithFile.OpenFile();
       }
       catch (ArgumentException ex) {
         MessageBox.Show(ex.Message, "Mistake", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -25,13 +23,12 @@ namespace lab14 {
       var mainReverseList = new List<string>();
       var counter = 1;
       foreach (var formula in logicalExpressionList) {
-        TextFromFile.Text += counter + ") " + formula + Environment.NewLine;
         List<Token> rpn = Arithmetic.ReversePolishNotation(formula);
         Dictionary<string, bool> variables = Arithmetic.GetVariables(rpn);
         var arrTable = Arithmetic.TruthTable(rpn, variables);
 
-        var sdnf = Arithmetic.Sdnf(arrTable, variables, rpn);
-        var sknf = Arithmetic.Sknf(arrTable, variables, rpn);
+        var sdnf = await Arithmetic.SdnfAsync(arrTable, variables, rpn);
+        var sknf = await Arithmetic.SknfAsync(arrTable, variables, rpn);
 
         ResultText.Text += counter + ") ";
         foreach (var item in rpn) {

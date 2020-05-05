@@ -4,30 +4,36 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
-namespace MVVM {
-  public class WorkWithFile {
-    private static List<string> _fileList = new List<string>();
+namespace MVVM { //модель
+  public class OriginalFormulas {
+    private List<string> _formulasList = new List<string>();
 
-    public static List<string> OpenFile() {
+    public List<string> GetFormulasList {
+      get => _formulasList; 
+    }
+
+    public List<string> OpenFile() {
       OpenFileDialog openFileDialog = new OpenFileDialog();
       if (openFileDialog.ShowDialog() == true) {
         var extension = Path.GetExtension(openFileDialog.FileName);
-        if (!(extension != ".txt")) { 
+        if (!(extension != ".txt")) {
           using (StreamReader sr = new StreamReader(openFileDialog.FileName)) {
             while (!sr.EndOfStream) {
               string strFromFile = sr.ReadLine().Replace(" ", "");
-              _fileList.Add(strFromFile);
+              _formulasList.Add(strFromFile);
             }
           }
-          if (!CorrectFile(_fileList)) {
+          if (!CorrectFile(_formulasList)) {
             throw new ArgumentException("Invalid data in the file");
           }
         } else {
           throw new ArgumentException("The file must have the txt extension");
         }
       }
-      return _fileList;
+      return _formulasList;
     }
 
     private static bool CorrectFile(List<string> fileList) {
@@ -42,18 +48,9 @@ namespace MVVM {
       return boolCorrect;
     }
 
-    public static async void WriteToFile(TextBlock resultText) {
-      SaveFileDialog dlg = new SaveFileDialog();
-      dlg.FileName = "result";
-      dlg.DefaultExt = ".txt"; 
-      dlg.Filter = "Text documents (.txt)|*.txt";
-      var result = dlg.ShowDialog();
-      if (result == true) {
-        using (FileStream fstream = new FileStream(dlg.FileName, FileMode.OpenOrCreate)) {
-          byte[] array = System.Text.Encoding.Default.GetBytes(resultText.Text);
-          await fstream.WriteAsync(array, 0, array.Length);
-        }
-      }
+    public event PropertyChangedEventHandler PropertyChanged;
+    public void OnPropertyChanged([CallerMemberName] string prop = "") {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
   }
 }

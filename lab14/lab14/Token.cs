@@ -1,4 +1,4 @@
-﻿namespace TokenOp {
+﻿namespace MVVM {
   public class Token {
     public enum TokenType {
       Variable, Operation

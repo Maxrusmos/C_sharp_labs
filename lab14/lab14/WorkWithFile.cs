@@ -2,47 +2,33 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
-using System.Windows.Controls;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MVVM {
   public class WorkWithFile {
-    private static List<string> _fileList = new List<string>();
-
-    public static List<string> OpenFile() {
-      OpenFileDialog openFileDialog = new OpenFileDialog();
-      if (openFileDialog.ShowDialog() == true) {
-        var extension = Path.GetExtension(openFileDialog.FileName);
-        if (!(extension != ".txt")) { 
-          using (StreamReader sr = new StreamReader(openFileDialog.FileName)) {
-            while (!sr.EndOfStream) {
-              string strFromFile = sr.ReadLine().Replace(" ", "");
-              _fileList.Add(strFromFile);
-            }
-          }
-          if (!CorrectFile(_fileList)) {
-            throw new ArgumentException("Invalid data in the file");
-          }
-        } else {
-          throw new ArgumentException("The file must have the txt extension");
-        }
+    public static string PreparingToWriteToFile(string formula, StringBuilder resultText, int counter) {
+      resultText.Append(counter + ") ");
+      List<Token> rpn = Arithmetic.ReversePolishNotation(formula);
+      foreach (var token in rpn) {
+        resultText.Append(token.Value);
       }
-      return _fileList;
+      resultText.Append(Environment.NewLine);
+      Dictionary<string, bool> variables = Arithmetic.GetVariables(rpn);
+      var arrTable = Arithmetic.TruthTable(rpn, variables);
+      for (int i = 0; i < (int)Math.Pow(2, variables.Count); i++) {
+        for (int j = 0; j < variables.Count + 1; j++) {
+          resultText.Append(arrTable[i, j]);
+        }
+        resultText.Append(Environment.NewLine);
+      }
+      resultText.Append(Arithmetic.Sknf(arrTable, variables, rpn) + Environment.NewLine
+        + Arithmetic.Sdnf(arrTable, variables, rpn) + Environment.NewLine);
+      resultText.Append("-----------------------------------------------------------------------" + Environment.NewLine);
+      return resultText.ToString();
     }
 
-    private static bool CorrectFile(List<string> fileList) {
-      var boolCorrect = true;
-      Regex r = new Regex(@"[^A-za-z0-1+!*~<>|)#(]+$");
-      foreach (var formula in fileList) {
-        Match m = r.Match(formula);
-        if (m.Success) {
-          boolCorrect = false;
-        }
-      }
-      return boolCorrect;
-    }
-
-    public static async void WriteToFile(TextBlock resultText) {
+    public static async Task WriteToFile(string resultText) {
       SaveFileDialog dlg = new SaveFileDialog();
       dlg.FileName = "result";
       dlg.DefaultExt = ".txt"; 
@@ -50,7 +36,7 @@ namespace MVVM {
       var result = dlg.ShowDialog();
       if (result == true) {
         using (FileStream fstream = new FileStream(dlg.FileName, FileMode.OpenOrCreate)) {
-          byte[] array = System.Text.Encoding.Default.GetBytes(resultText.Text);
+          byte[] array = System.Text.Encoding.Default.GetBytes(resultText);
           await fstream.WriteAsync(array, 0, array.Length);
         }
       }

@@ -3,11 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Windows.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace MVVM { //модель
+namespace MVVM {
   public class OriginalFormulas {
     private List<string> _formulasList = new List<string>();
 

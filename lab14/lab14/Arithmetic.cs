@@ -6,7 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MVVM {
-  static class Arithmetic {
+  public class Arithmetic {
+    private List<string> _pcnfPdnfList = new List<string>();
+
+    public List<string> GetPcnfPdnfList {
+      get => _pcnfPdnfList;
+    }
+
     public static List<Token> ReversePolishNotation(string expression) {
       var collection = Regex.Matches(expression, @"[()A-Za-z!*+>~#^|*]");
       var variables = new Regex(@"[A-Za-z]");
@@ -155,6 +161,7 @@ namespace MVVM {
       var tmpArr = ToDoubleArray(tmpList, variables, rowCounter);
       var strBuild = new StringBuilder();
       var vars = rpn.Where(x => x.Type == Token.TokenType.Variable).Distinct().Select(x => x.Value).Cast<string>().ToArray();
+      strBuild.Append("PDNF: ");
       for (int i = 0; i < rowCounter; i++) {
         strBuild.Append("(");
         for (int j = 0; j < variables.Count; j++) {
@@ -171,7 +178,7 @@ namespace MVVM {
         if (i != rowCounter - 1) {
           strBuild.Append("+");
         }
-      }
+      }    
       return strBuild.ToString();
     }
 
@@ -193,6 +200,7 @@ namespace MVVM {
       var tmpArr = ToDoubleArray(tmpList, variables, rowCounter);
       var strBuild = new StringBuilder();
       var vars = rpn.Where(x => x.Type == Token.TokenType.Variable).Distinct().Select(x => x.Value).Cast<string>().ToArray();
+      strBuild.Append("PCNF: ");
       for (int i = 0; i < rowCounter; i++) {
         strBuild.Append("(");
         for (int j = 0; j < variables.Count; j++) {
@@ -211,6 +219,17 @@ namespace MVVM {
         }
       }
       return strBuild.ToString();
+    }
+
+    private static int _counter = 0;
+    public static string AddToResultString(string pcnf, string pdnf) {
+      _counter++;
+      var strGapBuilder = new StringBuilder(_counter.ToString().Length > 1 ? "  " : " ");
+      for (int i = 0; i < (_counter.ToString() + ") ").Length; i++) {
+        strGapBuilder.Append(" ");
+      }
+
+      return _counter.ToString() + ") " + pcnf + Environment.NewLine + strGapBuilder.ToString() + pdnf;
     }
 
     public static async Task<string> SknfAsync(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {

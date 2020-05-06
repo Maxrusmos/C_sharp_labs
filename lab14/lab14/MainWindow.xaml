@@ -19,11 +19,12 @@
     <Menu Height="30" VerticalAlignment="Top" Grid.ColumnSpan="2">
       <MenuItem Header="File" FontSize="20">
         <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"></MenuItem>
-        <MenuItem Header="Save as" Click="ButtonWriteToFile_Click"></MenuItem>
+        <MenuItem Header="Save as" Command="{Binding TraceCommand}"></MenuItem>
         <Separator></Separator>
-        <MenuItem Header="Exit" Click="ButtonExit_Click"></MenuItem>
+        <MenuItem Header="Exit" Command="{Binding ExitCommand}"></MenuItem>
       </MenuItem>
-      <MenuItem Header="About" Click="ButtonAbout_Click" FontSize="20"></MenuItem>
+      <MenuItem Header="About" FontSize="20" Command="{Binding ShowAboutWindowCommand}"></MenuItem>
+      <!--Click="ButtonAbout_Click"-->
     </Menu>
 
     <Label FontSize="25" Name="TextFromFileLabel" Content="Boolean formulas:" 
@@ -55,7 +56,9 @@
                 <Button Grid.Row="0"
                         Grid.Column="2"
                         Content="Find PCNF and PDNF"
-                        Margin="0, 0, 10, 0"/>
+                        Margin="0, 0, 10, 0"
+                        Command="{Binding SolveOneCommand}"
+                        CommandParameter="{Binding}"/>
                 <Separator Grid.Row="1"
                            Grid.Column="0"
                            Grid.ColumnSpan="3"
@@ -73,18 +76,41 @@
             Grid.Column="0"
             Height="68" 
             Margin="10,0,10,23"
-            FontSize="22"/>
-
+            FontSize="22"
+            Command="{Binding CalcAllPcnfPdnfCommand}"/>
     <Label FontSize="25" Name="ResultLabel" Content="PCNF/PDNF:" 
            HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,-5,0,7" 
            Grid.Column="1" Grid.Row="0" Width="149" Height="39"/>
     <Border BorderThickness="1" BorderBrush="Black" Margin="10,0,10,23" Grid.Row="1" Grid.Column="1">
       <ScrollViewer Margin="9">
-        <TextBlock x:Name="ResultText" TextWrapping="Wrap" 
-             HorizontalAlignment="Stretch"
-             ScrollViewer.HorizontalScrollBarVisibility="Auto"
-             ScrollViewer.VerticalScrollBarVisibility="Auto"
-             ScrollViewer.CanContentScroll="True" FontSize="25"/>
+        <ItemsControl ItemsSource="{Binding PcnfPdnfList}" FontSize="20">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="Vertical"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Grid Margin="0,0,0,10">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="10*" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0"
+                           Grid.Column="0"
+                           Text="{Binding}" />
+                <Separator Grid.Row="1"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="3"
+                           Margin="0,0,10,0"/>
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
       </ScrollViewer>
     </Border>
   </Grid>

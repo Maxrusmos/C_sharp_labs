@@ -25,10 +25,15 @@ namespace MVVM {
               _formulasList.Add(strFromFile);
             }
           }
+          if (_formulasList.Count == 0) {
+            throw new ArgumentException("File is empty");
+          }
           if (!CorrectFile(_formulasList)) {
+            _formulasList.Clear();
             throw new ArgumentException("Invalid data in the file");
           }
         } else {
+          _formulasList.Clear();
           throw new ArgumentException("The file must have the txt extension");
         }
       }
@@ -37,7 +42,7 @@ namespace MVVM {
 
     private static bool CorrectFile(List<string> fileList) {
       var boolCorrect = true;
-      Regex r = new Regex(@"[^A-za-z0-1+!*~<>|)#(]+$");
+      Regex r = new Regex(@"[^A-za-z+!*~<>|)#(]+$");
       foreach (var formula in fileList) {
         Match m = r.Match(formula);
         if (m.Success) {

@@ -18,6 +18,8 @@ namespace MVVM {
           (_openFileCommand = new RelayCommand(obj =>
           {
             try {
+              PcnfPdnfList.Clear();
+              OriginalFormulasList.Clear();
               foreach (var formula in _modelFormulas.OpenFile()) {
                 OriginalFormulasList.Add(formula);
               }
@@ -38,13 +40,15 @@ namespace MVVM {
         return _calcAllPcnfPdnfCommand ??
           (_calcAllPcnfPdnfCommand = new RelayCommand(async obj =>
           {
+            PcnfPdnfList.Clear();
+            var counter = 0;
             foreach (var formula in OriginalFormulasList) {
               List<Token> rpn = Arithmetic.ReversePolishNotation(formula);
               Dictionary<string, bool> variables = Arithmetic.GetVariables(rpn);
               var arrTable = Arithmetic.TruthTable(rpn, variables);        
               PcnfPdnfList.Add(Arithmetic.AddToResultString(
                 await Arithmetic.SknfAsync(arrTable, variables, rpn), 
-                await Arithmetic.SdnfAsync(arrTable, variables, rpn)));
+                await Arithmetic.SdnfAsync(arrTable, variables, rpn), ++counter));
             }
           }));
       }
@@ -81,29 +85,12 @@ namespace MVVM {
     public RelayCommand ShowAboutWindowCommand {
       get {
         return _showAboutWindowCommand ??
-          (_showAboutWindowCommand = new RelayCommand(obj => {
+          (_showAboutWindowCommand = new RelayCommand(obj => { 
             AboutWindow aboutWindow = new AboutWindow();
             aboutWindow.ShowDialog();
           }));
       }
     }
-
-    //private RelayCommand _solveOneCommand;
-    //public RelayCommand SolveOneCommand {
-    //  get {
-    //    return _solveOneCommand ??
-    //      (_solveOneCommand = new RelayCommand(async obj =>
-    //      {
-    //        var index = OriginalFormulasList.IndexOf(obj as string);
-    //        List<Token> rpn = Arithmetic.ReversePolishNotation(OriginalFormulasList[index]);
-    //          Dictionary<string, bool> variables = Arithmetic.GetVariables(rpn);
-    //          var arrTable = Arithmetic.TruthTable(rpn, variables);        
-    //          PcnfPdnfList.Add(Arithmetic.AddToResultString(
-    //            await Arithmetic.SknfAsync(arrTable, variables, rpn), 
-    //            await Arithmetic.SdnfAsync(arrTable, variables, rpn)));
-    //      }));
-    //  }
-    //}
 
     private string _originalFormulasList;
     public string OriginalFormulasListItem {
@@ -123,12 +110,19 @@ namespace MVVM {
       }
     }
 
-    private object _selectedFormula;
-    public object SelectedFormula {
+    private string _selectedFormula;
+    public string SelectedFormula {
       get => _selectedFormula;
       set {
         _selectedFormula = value;
         OnPropertyChanged(nameof(SelectedFormula));
+
+        PcnfPdnfList.Clear();
+        List<Token> rpn = Arithmetic.ReversePolishNotation(_selectedFormula);
+        Dictionary<string, bool> variables = Arithmetic.GetVariables(rpn);
+        var arrTable = Arithmetic.TruthTable(rpn, variables);
+        PcnfPdnfList.Add("Truth Table: " + Environment.NewLine + Arithmetic.TruthTableToString(arrTable, variables) + 
+          Arithmetic.Sknf(arrTable, variables, rpn) + Environment.NewLine +  Arithmetic.Sdnf(arrTable, variables, rpn));
       }
     }
 

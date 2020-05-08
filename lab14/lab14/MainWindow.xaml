@@ -24,7 +24,6 @@
         <MenuItem Header="Exit" Command="{Binding ExitCommand}"></MenuItem>
       </MenuItem>
       <MenuItem Header="About" FontSize="20" Command="{Binding ShowAboutWindowCommand}"></MenuItem>
-      <!--Click="ButtonAbout_Click"-->
     </Menu>
 
     <Label FontSize="25" Name="TextFromFileLabel" Content="Boolean formulas:" 
@@ -32,7 +31,9 @@
            Margin="10,-5,0,5" Width="225" Grid.Row="0" Height="41"/>
     <Border BorderThickness="1" BorderBrush="Black" Margin="10,0,10,96" Grid.Row="1" Grid.Column="0">
       <ScrollViewer Margin="9">
-        <ItemsControl ItemsSource="{Binding OriginalFormulasList}" FontSize="20">
+        <ListBox ItemsSource="{Binding OriginalFormulasList}" 
+                 FontSize="20"
+                 SelectedItem="{Binding SelectedFormula}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <StackPanel Orientation="Vertical"/>
@@ -52,21 +53,13 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0"
                            Grid.Column="0"
-                           Text="{Binding}" />
-                <Button Grid.Row="0"
-                        Grid.Column="2"
-                        Content="Find PCNF and PDNF"
-                        Margin="0, 0, 10, 0"
-                        Command="{Binding SolveOneCommand}"
-                        CommandParameter="{Binding}"/>
-                <Separator Grid.Row="1"
-                           Grid.Column="0"
-                           Grid.ColumnSpan="3"
-                           Margin="0,0,10,0"/>
+                           Margin="5, 5, 0, 5"
+                           Padding="0, 5, 5, 1"
+                           Text="{Binding}"/>
               </Grid>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        </ListBox>
       </ScrollViewer>
     </Border>
     <Button Content="Find PCNF and PDNF for all formulas" 

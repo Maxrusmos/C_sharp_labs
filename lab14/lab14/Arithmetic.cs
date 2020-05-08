@@ -127,6 +127,22 @@ namespace MVVM {
       return valueArray;
     }
 
+    public static string TruthTableToString(string[,] truthTable, Dictionary<string, bool> variables) {
+      var strBuild = new StringBuilder();
+      foreach (var varName in variables) {
+        strBuild.Append(" " + varName.Key + " ");
+      }
+      strBuild.Append("φ");
+      strBuild.Append(Environment.NewLine);
+      for (int i = 0; i < (int)Math.Pow(2, variables.Count); i++) {
+        for (int j = 0; j < variables.Count + 1; j++) {
+          strBuild.Append(truthTable[i, j]);
+        }
+        strBuild.Append(Environment.NewLine);
+      }
+      return strBuild.ToString();
+    }
+
     private static string[,] ToDoubleArray(List<string> valueList, Dictionary<string, bool> variables) {
       var arr = new string[(int)Math.Pow(2, variables.Count), variables.Count + 1];
       for (int i = 0, r = 0; r < (int)Math.Pow(2, variables.Count); ++r) {
@@ -221,15 +237,12 @@ namespace MVVM {
       return strBuild.ToString();
     }
 
-    private static int _counter = 0;
-    public static string AddToResultString(string pcnf, string pdnf) {
-      _counter++;
-      var strGapBuilder = new StringBuilder(_counter.ToString().Length > 1 ? "  " : " ");
-      for (int i = 0; i < (_counter.ToString() + ") ").Length; i++) {
+    public static string AddToResultString(string pcnf, string pdnf, int counter) {
+      var strGapBuilder = new StringBuilder(counter.ToString().Length > 1 ? "  " : " ");
+      for (int i = 0; i < (counter.ToString() + ") ").Length; i++) {
         strGapBuilder.Append(" ");
       }
-
-      return _counter.ToString() + ") " + pcnf + Environment.NewLine + strGapBuilder.ToString() + pdnf;
+      return counter.ToString() + ") " + pcnf + Environment.NewLine + strGapBuilder.ToString() + pdnf;
     }
 
     public static async Task<string> SknfAsync(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {

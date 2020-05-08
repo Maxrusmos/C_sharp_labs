@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MVVM {
-  public class WorkWithFile {
+  public static class WorkWithFile {
     public static string PreparingToWriteToFile(string formula, StringBuilder resultText, int counter) {
       resultText.Append(counter + ") ");
       List<Token> rpn = Arithmetic.ReversePolishNotation(formula);

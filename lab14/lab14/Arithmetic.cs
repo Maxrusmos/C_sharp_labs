@@ -9,25 +9,23 @@ namespace MVVM {
   public class Arithmetic {
     private List<string> _pcnfPdnfList = new List<string>();
 
-    public List<string> GetPcnfPdnfList {
-      get => _pcnfPdnfList;
-    }
-
     public static List<Token> ReversePolishNotation(string expression) {
-      var collection = Regex.Matches(expression, @"[()A-Za-z!*+>~#^|*]");
+      var collection = Regex.Matches(expression, @"[()A-Za-z!*+>~#^|]");
       var variables = new Regex(@"[A-Za-z]");
-      var operations = new Regex(@"[!*+>~#|^]"); 
-      var brackets = new Regex(@"\(|\)"); 
-      var priority = new string[] { "!", "*", "+", ">", "~", "|", "#", "^"};
+      var operations = new Regex(@"[!*+>~#|^]");
+      var brackets = new Regex(@"\(|\)");
+      var priority = new string[] { "!", "*", "+", ">", "~", "|", "#", "^" };
       var stack = new Stack<string>();
       var list = new List<Token>();
 
       foreach (Match match in collection) {
-        Match temp = variables.Match(match.Value);
+        var temp = variables.Match(match.Value);
+
         if (temp.Success) {
           list.Add(new Token(temp.Value, Token.TokenType.Variable));
           continue;
         }
+
         temp = brackets.Match(match.Value);
         if (temp.Success) {
           if (temp.Value == "(") {
@@ -41,18 +39,21 @@ namespace MVVM {
           }
           continue;
         }
+
         temp = operations.Match(match.Value);
         if (temp.Success) {
-          if (stack.Count != 0)
+          if (stack.Count != 0) {
             while (Array.IndexOf(priority, temp.Value) > Array.IndexOf(priority, stack.Peek())) {
               if (stack.Peek() == "(") {
                 break;
               }
               list.Add(new Token(stack.Pop(), Token.TokenType.Operation));
             }
+          }
           stack.Push(temp.Value);
         }
       }
+
       while (stack.Count != 0) {
         list.Add(new Token(stack.Pop(), Token.TokenType.Operation));
       }
@@ -165,7 +166,7 @@ namespace MVVM {
 
     public static string Sdnf(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {
       var rowCounter = 0;
-      var tmpList = new List<string>();    
+      var tmpList = new List<string>();
       for (int i = 0; i < (int)Math.Pow(2, variables.Count); i++) {
         if (truthTable[i, variables.Count] == " 1 ") {
           for (int j = 0; j < variables.Count; j++) {
@@ -194,12 +195,12 @@ namespace MVVM {
         if (i != rowCounter - 1) {
           strBuild.Append("+");
         }
-      }    
+      }
       return strBuild.ToString();
     }
 
     public static async Task<string> SdnfAsync(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {
-      return await Task.Run(() => Sdnf(truthTable, variables, rpn)); 
+      return await Task.Run(() => Sdnf(truthTable, variables, rpn));
     }
 
     public static string Sknf(string[,] truthTable, Dictionary<string, bool> variables, List<Token> rpn) {

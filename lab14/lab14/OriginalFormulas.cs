@@ -15,7 +15,8 @@ namespace MVVM {
     }
 
     public List<string> OpenFile() {
-      OpenFileDialog openFileDialog = new OpenFileDialog();
+      _formulasList.Clear();
+     OpenFileDialog openFileDialog = new OpenFileDialog();
       if (openFileDialog.ShowDialog() == true) {
         var extension = Path.GetExtension(openFileDialog.FileName);
         if (!(extension != ".txt")) {
@@ -41,11 +42,24 @@ namespace MVVM {
     }
 
     private static bool CorrectFile(List<string> fileList) {
+      var brackStack = new Stack<char>();
+
       var boolCorrect = true;
-      Regex r = new Regex(@"[^A-za-z+!*~<>|)#(]+$");
+      Regex r = new Regex(@"[^A-Za-z+!*~<>|)#(]+$");
       foreach (var formula in fileList) {
         Match m = r.Match(formula);
         if (m.Success) {
+          boolCorrect = false;
+        }
+        foreach (var formulaItem in formula) {
+          if (formulaItem == '(') {
+            brackStack.Push(formulaItem);
+          }
+          if (formulaItem == ')' && brackStack.Count != 0) {
+            brackStack.Pop();
+          }
+        }
+        if (brackStack.Count != 0) {
           boolCorrect = false;
         }
       }

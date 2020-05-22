@@ -76,7 +76,7 @@
            Grid.Column="1" Grid.Row="0" Width="149" Height="39"/>
     <Border BorderThickness="1" BorderBrush="Black" Margin="10,0,10,23" Grid.Row="1" Grid.Column="1">
       <ScrollViewer Margin="9">
-        <ItemsControl ItemsSource="{Binding PcnfPdnfList}" FontSize="20">
+        <ItemsControl ItemsSource="{Binding PcnfPdnfList}" FontSize="20" Margin="0 0 10 0">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <StackPanel Orientation="Vertical"/>
@@ -91,14 +91,16 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="10*" />
-                  <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0"
-                           Grid.Column="0"
-                           Text="{Binding}" />
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
+                  <TextBlock Grid.Row="0"
+                             Grid.Column="0"
+                             Text="{Binding}" 
+                             Margin="0 0 0 10"/>
+                </ScrollViewer>
                 <Separator Grid.Row="1"
                            Grid.Column="0"
-                           Grid.ColumnSpan="3"
+                           Grid.ColumnSpan="2"
                            Margin="0,0,10,0"/>
               </Grid>
             </DataTemplate>
